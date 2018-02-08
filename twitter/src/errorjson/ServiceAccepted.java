@@ -7,7 +7,7 @@ public class ServiceAccepted {
 		
 	}
 	
-	public static JSONObject ServiceAccepted(String message, String code) {
+	public static JSONObject serviceAccepted(String message, String code) {
 		JSONObject res = new JSONObject();
 		return res;
 	}

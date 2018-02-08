@@ -7,7 +7,7 @@ public class ServiceRefused {
 		
 	}
 	
-	public static JSONObject ServiceRefused(String message, String code) {
+	public static JSONObject serviceRefused(String message, String code) {
 		JSONObject res = new JSONObject();
 		return res;
 	}

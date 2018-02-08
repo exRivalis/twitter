@@ -3,6 +3,9 @@ package service.user;
 import org.json.JSONObject;
 
 import errorjson.ServiceRefused;
+import errorjson.ServiceAccepted;
+
+import tools.UserTools;
 
 public class User {
 	
@@ -10,15 +13,21 @@ public class User {
 		
 	}
 	
-	public static JSONObject CreateUser(String login, String mdp, String nom, String prenom, String email) {
+	public static JSONObject createUser(String login, String mdp, String nom, String prenom, String email) {
 		if (login == null || mdp == null || nom == null || prenom == null || email == null) {
-			return ServiceRefused.ServiceRefused("arguments manquants","-1");
+			return ServiceRefused.serviceRefused("arguments manquants","-1");
 			
 		}
 		
-		if(tools.UserTools.UserExists())
-			return ServiceRefused.ServiceRefused("Login deja existant", "-2");
-		}
-	
-	
+		//tester si login deja utilisé
+		if(UserTools.userExists(login))
+			return ServiceRefused.serviceRefused("Login deja existant", "-2");
+		
+		/*
+		 * TODO
+		 * insérer user dans la BD 
+		 */
+		return UserTools.addUser(login, mdp, nom, prenom, email);
+		
+	}
 }
