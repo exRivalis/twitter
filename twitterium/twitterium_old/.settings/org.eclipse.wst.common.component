@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?><project-modules id="moduleCoreId" project-version="1.5.0">
+    <wb-module deploy-name="twitterium">
+        <wb-resource deploy-path="/" source-path="/WebContent" tag="defaultRootSource"/>
+        <wb-resource deploy-path="/WEB-INF/classes" source-path="/src"/>
+        <wb-resource deploy-path="/WEB-INF/classes" source-path="/servlets"/>
+        <wb-resource deploy-path="/WEB-INF/classes" source-path="/servicesClasses"/>
+        <wb-resource deploy-path="/WEB-INF/classes" source-path="/servicesTools"/>
+        <wb-resource deploy-path="/WEB-INF/classes" source-path="/bd"/>
+        <wb-resource deploy-path="/WEB-INF/classes" source-path="/test"/>
+        <property name="context-root" value="twitterium"/>
+        <property name="java-output-path" value="/twitterium/build/classes"/>
+    </wb-module>
+</project-modules>

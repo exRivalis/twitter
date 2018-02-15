@@ -48,5 +48,17 @@ public class UserTools {
 		return key;		
 	}
 	
+	public static JSONObject loginUser(String login, String mdp) {
+		
+		return ServiceAccepted.serviceAccepted("ok", "ok");
+		
+	}
+	
+public static JSONObject logOutUser(String login, String mdp) {
+		
+		return ServiceAccepted.serviceAccepted("ok", "ok");
+		
+	}
+	
 	
 }

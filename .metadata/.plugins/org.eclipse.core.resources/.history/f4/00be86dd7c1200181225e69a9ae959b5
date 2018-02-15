@@ -1,0 +1,8 @@
+package test;
+
+public class Test {
+	public static void main() {
+		Class.forName("com.mysql.jdbc.Driver").newInstance();
+		
+	}
+}

@@ -1,0 +1,13 @@
+!SESSION 2018-02-05 19:55:02.443 -----------------------------------------------
+eclipse.buildId=4.7.2.M20171130-0510
+java.version=1.8.0_151
+java.vendor=Oracle Corporation
+BootLoader constants: OS=linux, ARCH=x86_64, WS=gtk, NL=fr_CA
+Framework arguments:  -product org.eclipse.epp.package.jee.product
+Command-line arguments:  -os linux -ws gtk -arch x86_64 -product org.eclipse.epp.package.jee.product
+
+!ENTRY org.eclipse.ui 1 1 2018-02-05 19:55:36.766
+!MESSAGE Workbench migration started
+
+!ENTRY org.eclipse.ui 1 1 2018-02-05 19:55:39.664
+!MESSAGE Workbench migration finished
