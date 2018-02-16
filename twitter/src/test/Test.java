@@ -6,50 +6,29 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import bd.Database;
+import bd.UserTools;
 
 public class Test {
-	public static void main(String[] args) {
+	public static boolean testAddUser(String login, String mdp) throws SQLException, InstantiationException, IllegalAccessException, ClassNotFoundException {
+		JSONObject result = UserTools.addUser(login, mdp, "Camus", "Albert");
 		try {
-			Class.forName("com.mysql.jdbc.Driver").newInstance();
-			try {
-				Connection c = Database.getMySQLConnection();
-				
-				//insertion ligne dans bd
-				/*
-				String query = "INSERT INTO users VALUES(1, \"albert7\", \"pswd\", \"Albert\", \"Camus\")";
-				Statement st = c.createStatement();
-				st.executeUpdate(query);
-				*/
-				//lecture ligne
-				String query = "SELECT * FROM users ;";
-				Statement st = c.createStatement();
-				ResultSet rs = st.executeQuery(query);
-				
-				while(rs.next())
-					System.out.println(rs.getString("login"));
-					
-				
-				rs.close();
-				st.close();
-				c.close();
-				
-						
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			
-		} catch (InstantiationException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IllegalAccessException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (ClassNotFoundException e) {
+			if(result.getString("message").equals("OK"))
+				return true;
+		} catch (JSONException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
+		return false;
+	}
+	
+	public static boolean testCheckPasswd(String login, String mdp) throws SQLException, InstantiationException, IllegalAccessException, ClassNotFoundException {
+		return UserTools.checkPasswd(login, mdp);
 	}
 }
+
+
