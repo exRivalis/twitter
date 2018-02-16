@@ -30,8 +30,8 @@ public class Database {
 						DBStatic.database, DBStatic.login, DBStatic.password));
 			}
 			else {
-			if (database==null) {
-				database=new Database("jdbc/db");
+			if (DBStatic.database==null) {
+				DBStatic.database=new Database("jdbc/db");
 			}
 			return(database.getConnection());
 			}

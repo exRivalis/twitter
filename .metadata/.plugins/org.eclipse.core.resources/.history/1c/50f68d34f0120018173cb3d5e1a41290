@@ -26,8 +26,7 @@ public class Test {
 				Statement st = c.createStatement();
 				ResultSet rs = st.executeQuery(query);
 				
-				while(rs.next())
-					System.out.println(rs.getString("login"));
+				System.out.println(rs);
 					
 				
 				rs.close();

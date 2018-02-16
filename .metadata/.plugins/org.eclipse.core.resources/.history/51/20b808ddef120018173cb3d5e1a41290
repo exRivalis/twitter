@@ -16,18 +16,15 @@ public class Test {
 				Connection c = Database.getMySQLConnection();
 				
 				//insertion ligne dans bd
-				/*
 				String query = "INSERT INTO users VALUES(1, \"albert7\", \"pswd\", \"Albert\", \"Camus\")";
 				Statement st = c.createStatement();
 				st.executeUpdate(query);
-				*/
+				
 				//lecture ligne
-				String query = "SELECT * FROM users ;";
-				Statement st = c.createStatement();
+				query = "SELECT * FROM users ;";
 				ResultSet rs = st.executeQuery(query);
 				
-				while(rs.next())
-					System.out.println(rs.getString("login"));
+				System.out.println(rs.gerString("login"));
 					
 				
 				rs.close();
