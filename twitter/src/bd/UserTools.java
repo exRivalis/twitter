@@ -84,9 +84,29 @@ public class UserTools {
 		return succeed;
 	}
 	
-	public static boolean isConnected(String login) {
+	/*
+	 * @param login
+	 * @return true if connected
+	 */
+	public static boolean isConnected(String login) throws SQLException, InstantiationException, IllegalAccessException, ClassNotFoundException {
+		Class.forName("com.mysql.jdbc.Driver").newInstance();
+		Connection co = Database.getMySQLConnection();
+		//recup la ligne avec contenant ce login
+		String query = "SELECT connected FROM session, users WHERE login=\""+login+"\" AND userId = id";
+	
+		Statement st = co.createStatement();
+		ResultSet cursor = st.executeQuery(query);
+		boolean connected = false;
+		while(cursor.next()) {
+			connected = cursor.getBoolean("connected");
+		}
 		
-		return false;
+		//close connections
+		cursor.close();
+		st.close();
+		co.close();
+		
+		return connected;
 	}
 	
 	public static String generateKey() {
@@ -134,9 +154,21 @@ public class UserTools {
 		return key;
 	}
 	
-	public static JSONObject logOutUser(String login, String mdp) {
-		
-		return ServicesTools.serviceAccepted("key", "");
+	public static JSONObject logoutUser(String login) throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException {
+		//modifier la ligne correspondante en inserant 0 au chanmp connected
+		Class.forName("com.mysql.jdbc.Driver").newInstance();
+		Connection co = Database.getMySQLConnection();
+		String userId = "\""+getUserId(login)+"\"";
+		//ajout connection a la table session
+		//SQL TRUE : 1, FALSE : 0
+		String query = "UPDATE session SET connected = \"0\" WHERE userId="+userId+";";
+		Statement st = co.createStatement();
+		st.executeUpdate(query);
+				
+		//close connections
+		st.close();
+		co.close();
+		return ServicesTools.serviceAccepted("task", "Disconnected");
 		
 	}
 	

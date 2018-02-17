@@ -19,5 +19,12 @@ public class Main {
 		else {
 			System.out.println("Test passwd echec");
 		}
+		
+		//test deconnection
+		if(Test.testLogout("Jacko"))
+			System.out.println("Test deconnection avec succes");
+		else {
+			System.out.println("Test deconnection echec");
+		}
 	}
 }

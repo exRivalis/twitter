@@ -52,8 +52,8 @@ public class User {
 	
 	
 	//se deconnecter
-	public static JSONObject logOut(String login, String mdp) {
-		if (login == null || mdp == null) {
+	public static JSONObject logout(String login) throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException {
+		if (login == null) {
 			return ServicesTools.serviceRefused("argument manquant","-1");
 		}
 		
@@ -63,7 +63,7 @@ public class User {
 			
 		}
 		
-		return bd.UserTools.logOutUser(login,mdp);
+		return bd.UserTools.logoutUser(login);
 		
 	}
 }

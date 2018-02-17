@@ -36,6 +36,20 @@ public class Test {
 		
 		return (key.length()> 0);
 	}
+	
+	public static boolean testLogout(String login) throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException {
+		JSONObject result = UserTools.logoutUser(login);
+		System.out.println(result);
+		
+		try {
+			return (result.get("task").equals("Disconnected"));
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return false;
+	}
 }
 
 
