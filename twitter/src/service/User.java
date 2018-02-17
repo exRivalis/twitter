@@ -40,8 +40,8 @@ public class User {
 			return ServicesTools.serviceRefused("Utilisateur inexistant","-2");
 		}
 		boolean mdp_ok = bd.UserTools.checkPasswd(login, mdp);
-		if(!is_user) {
-			return ServicesTools.serviceRefused("Utilisateur inexistant","-2");
+		if(!mdp_ok) {
+			return ServicesTools.serviceRefused("Mot de passe incorrect","-2");
 		}
 		
 		return bd.UserTools.loginUser(login,mdp);

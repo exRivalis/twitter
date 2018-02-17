@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<server port="8080">
-  <module name="twitterium" path="/home/exrivalis/Documents/s6/3i017/.metadata/.plugins/org.eclipse.wst.server.core/tmp0/twitterium" type="j2ee"/>
-  <module context="twitter" name="twitter" path="/home/exrivalis/Documents/s6/3i017/.metadata/.plugins/org.eclipse.wst.server.core/tmp0/twitter" type="j2ee"/>
-</server>
