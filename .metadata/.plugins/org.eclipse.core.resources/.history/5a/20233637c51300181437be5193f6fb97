@@ -1,0 +1,7 @@
+package servlet.user;
+
+import Httpjavax.servlet.http.HttpServlet;
+
+public class AddUser extends HttpServlet {
+
+}

@@ -9,7 +9,6 @@ import javax.servlet.http.HttpServletResponse;
 import org.json.JSONObject;
 
 /*
- * cree un nouvel utilisateur et l'ajout a la bd
  * @param login, mdp, nom, prenom
  * @return JSONObject decrivant le deroulement de l'operation
  */

@@ -4,7 +4,7 @@
 	<display-name>Twitterium</display-name> 
 	<servlet> 
 		<servlet-name>createUser</servlet-name> 
-		<servlet-class>servlet.user.CreateUser</servlet-class> 
+		<servlet-class>user.CreateUser</servlet-class> 
 	</servlet> 
 	
 	
