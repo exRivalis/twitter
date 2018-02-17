@@ -29,6 +29,13 @@ public class Test {
 	public static boolean testCheckPasswd(String login, String mdp) throws SQLException, InstantiationException, IllegalAccessException, ClassNotFoundException {
 		return UserTools.checkPasswd(login, mdp);
 	}
+	
+	public static boolean testInsertConnection(String login) throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException {
+		String key = UserTools.insertConnection(login);
+		System.out.println(key);
+		
+		return (key.length()> 0);
+	}
 }
 
 

@@ -893,3 +893,9 @@ org.eclipse.core.runtime.CoreException: Unable to detect 'webapp' folder in the 
 
 !ENTRY org.eclipse.jst.server.tomcat.core 4 0 2018-02-17 11:33:54.330
 !MESSAGE Several ports (8005, 8080, 8009) required by Tomcat v7.0 Server at localhost are already in use. The server may already be running in another process, or a system process may be using the port. To start this server you will need to stop the other process or change the port number(s).
+
+!ENTRY org.eclipse.jface.text 2 0 2018-02-17 13:44:27.834
+!MESSAGE Duplicate template id: 'org.eclipse.wst.xslt.templates.xpath.number'
+
+!ENTRY org.eclipse.jface.text 2 0 2018-02-17 13:44:27.836
+!MESSAGE Duplicate template id: 'org.eclipse.wst.xslt.templates.xpath.round'

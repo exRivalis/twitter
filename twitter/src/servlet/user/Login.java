@@ -7,7 +7,10 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.json.JSONException;
 import org.json.JSONObject;
+
+import tools.ServicesTools;
 
 public class Login extends HttpServlet {
 	public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -15,6 +18,9 @@ public class Login extends HttpServlet {
 		String login = request.getParameter("login");
 		String mdp = request.getParameter("mdp");
 		JSONObject result = new JSONObject();
+		
+		if(login.length() == 0 || mdp.length() == 0)
+			result = ServicesTools.serviceRefused("Error", "Arguments invalides");
 		
 		//call service login
 		try {

@@ -35,15 +35,18 @@ public class User {
 			return ServicesTools.serviceRefused("argument manquant","-1");
 		}
 		
+		//si l'utilisateur n'existe pas on arrete
 		boolean is_user = bd.UserTools.userExists(login);
 		if(!is_user) {
 			return ServicesTools.serviceRefused("Utilisateur inexistant","-2");
 		}
+		
+		//si le mdp incorrect on arrete
 		boolean mdp_ok = bd.UserTools.checkPasswd(login, mdp);
 		if(!mdp_ok) {
 			return ServicesTools.serviceRefused("Mot de passe incorrect","-2");
 		}
-		
+	
 		return bd.UserTools.loginUser(login,mdp);
 	}
 	

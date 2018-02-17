@@ -8,8 +8,9 @@ public class ServicesTools {
 	public static JSONObject serviceAccepted(String message, String code) {
 		JSONObject res = new JSONObject();
 		try {
-			res.put("message", message);
-			res.put("code", code);
+			//service accepted tjrs OK
+			res.put("status", "OK");
+			res.put(message, code);
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -20,7 +21,9 @@ public class ServicesTools {
 	public static JSONObject serviceRefused(String message, String code) {
 		JSONObject res = new JSONObject();
 		try {
-			res.put("message", message);
+			//service refused tjrs KO
+			res.put("status", "KO");
+			res.put("error", message);
 			res.put("code", code);
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block

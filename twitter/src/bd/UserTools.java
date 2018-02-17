@@ -107,16 +107,59 @@ public class UserTools {
 		return key;		
 	}
 	
-	public static JSONObject loginUser(String login, String mdp) {
+	public static JSONObject loginUser(String login, String mdp) throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException {
 		
-		return ServicesTools.serviceAccepted("ok", "ok");
+		//generate new connection key
+		String key = insertConnection(login);
+		return ServicesTools.serviceAccepted("key", key);
 		
 	}
 	
-public static JSONObject logOutUser(String login, String mdp) {
+	//inserer une connection et retourne une cle
+	public static String insertConnection(String login) throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException {
+		Class.forName("com.mysql.jdbc.Driver").newInstance();
+		Connection co = Database.getMySQLConnection();
+		String userId = "\""+getUserId(login)+"\"";
+		String key = "\""+ generateKey() + "\"";
+		//ajout connection a la table session
+		//SQL TRUE : 1, FALSE : 0
+		String query = "INSERT INTO session VALUES("+key+", "+userId+ ", \"1\");";
+		Statement st = co.createStatement();
+		st.executeUpdate(query);
+				
+		//close connections
+		st.close();
+		co.close();
 		
-		return ServicesTools.serviceAccepted("ok", "ok");
+		return key;
+	}
+	
+	public static JSONObject logOutUser(String login, String mdp) {
 		
+		return ServicesTools.serviceAccepted("key", "");
+		
+	}
+	
+	//recup id selon login
+	public static int getUserId(String login) throws SQLException, InstantiationException, IllegalAccessException, ClassNotFoundException {
+		Class.forName("com.mysql.jdbc.Driver").newInstance();
+		Connection co = Database.getMySQLConnection();
+		//recup la ligne avec contenant ce login
+		String query = "SELECT * FROM users WHERE login=\"" + login + "\";";
+	
+		Statement st = co.createStatement();
+		ResultSet cursor = st.executeQuery(query);
+		int id = -1;
+		while(cursor.next()) {
+			id = cursor.getInt("id");
+		}
+		
+		//close connections
+		cursor.close();
+		st.close();
+		co.close();
+		
+		return id;
 	}
 	
 	
