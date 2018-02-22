@@ -1,10 +1,16 @@
 package bd;
+import java.net.UnknownHostException;
+import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.sql.Connection;
-import javax.sql.DataSource;
+
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
+import javax.sql.DataSource;
+
+import com.mongodb.DB;
+import com.mongodb.DBCollection;
+import com.mongodb.MongoClient;
 
 public class Database {
 
@@ -26,8 +32,8 @@ public class Database {
 		
 		public static Connection getMySQLConnection() throws SQLException {
 			if (DBStatic.pooling==false) {
-				return(DriverManager.getConnection("jdbc:mysql://" + DBStatic.localhost + "/" +
-						DBStatic.database, DBStatic.login, DBStatic.password));
+				return(DriverManager.getConnection("jdbc:mysql://" + DBStatic.localhost_mysql + "/" +
+						DBStatic.db_mysql, DBStatic.login, DBStatic.password));
 			}
 			else {
 			if (database==null) {
@@ -35,6 +41,15 @@ public class Database {
 			}
 			return(database.getConnection());
 			}
+		}
+		
+		public static DBCollection getCollection(String collection) throws UnknownHostException {
+			//connexion mongnoDB
+			MongoClient mongo = new MongoClient(DBStatic.localhost_mongo);
+			//recup bd
+			DB db = mongo.getDB(DBStatic.db_mongo);
+			//return collection
+			return db.getCollection(collection);
 		}
 			
 }

@@ -5,12 +5,12 @@ import org.json.JSONObject;
 
 public class ServicesTools {
 	
-	public static JSONObject serviceAccepted(String message, String code) {
+	public static JSONObject serviceAccepted(String message) {
 		JSONObject res = new JSONObject();
 		try {
 			//service accepted tjrs OK
 			res.put("status", "OK");
-			res.put(message, code);
+			res.put("message", message);
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -18,7 +18,7 @@ public class ServicesTools {
 		return res;
 	}
 	
-	public static JSONObject serviceRefused(String message, String code) {
+	public static JSONObject serviceRefused(String message, int code) {
 		JSONObject res = new JSONObject();
 		try {
 			//service refused tjrs KO

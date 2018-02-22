@@ -14,17 +14,17 @@ import tools.ServicesTools;
 public class Logout extends HttpServlet {
 	public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		//recup params
-		String login = request.getParameter("login");
+		String key = request.getParameter("key");
 		JSONObject result = new JSONObject();
-		
-		if(login.length() == 0)
-			result = ServicesTools.serviceRefused("Error", "Arguments invalides");
-		
-		//call service login
-		try {
-			result = service.User.logout(login);
-		}catch(Exception e) {
-			e.printStackTrace();
+		if(key.length() == 0)
+			result = ServicesTools.serviceRefused("Arguments invalides", -1);
+		else {
+			//call service login
+			try {
+				result = service.User.logout(key);
+			}catch(Exception e) {
+				e.printStackTrace();
+			}
 		}
 		
 		response.setContentType("text/plain");

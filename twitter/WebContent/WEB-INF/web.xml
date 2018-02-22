@@ -15,6 +15,10 @@
 		<servlet-name>logout</servlet-name> 
 		<servlet-class>servlet.user.Logout</servlet-class> 
 	</servlet> 
+	<servlet> 
+		<servlet-name>message</servlet-name> 
+		<servlet-class>servlet.message.CreateMessage</servlet-class> 
+	</servlet> 
 	
 	
 
@@ -29,6 +33,10 @@
 	<servlet-mapping> 
 		<servlet-name>logout</servlet-name> 
 		<url-pattern>/user/logout</url-pattern> 
+	</servlet-mapping>
+	<servlet-mapping> 
+		<servlet-name>message</servlet-name> 
+		<url-pattern>/message/create</url-pattern> 
 	</servlet-mapping>
 
 
