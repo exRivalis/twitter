@@ -72,6 +72,23 @@ public class UserTools {
 		return succeed;
 	}
 	
+	//verif si id existe
+	public static boolean checkID(String id, Connection co) throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException {
+		//recup la ligne avec contenant ce login et mdp si elle existe
+		String query = "SELECT * FROM users WHERE id='"+id+"';";
+	
+		Statement st = co.createStatement();
+		ResultSet cursor = st.executeQuery(query);
+		
+		//si ma requete ne renvoie pas un resultat vide -> id existe
+		boolean succeed = cursor.next();
+		
+		//close connections
+		cursor.close();
+		st.close();
+		
+		return succeed;
+	}
 	/*
 	 * @param key
 	 * @return true if connected
@@ -198,37 +215,5 @@ public class UserTools {
         //si la cle est correcte on renvoie l'id, -1 sinon
         return id;
     }
-   
-    //Ajouter un amis
-    public static JSONObject addFriend(String key, String id_friend, Connection co) throws SQLException, InstantiationException, IllegalAccessException, ClassNotFoundException{
-        // recuperer l'id via l'index
-        int id = getIdWithKey(key, co);
-       
-        //Ajout dans la table amis de la relation
-        String query = "INSERT INTO friends VALUES("+id+", "+id_friend+ ");";
-        Statement st = co.createStatement();
-       
-        //close connections
-        st.close();
-        return     ServicesTools.serviceAccepted("Ami ajouté");
-   
-    }
-   
-    //supprimer un amis
-    public static JSONObject removeFriend(String key, String id_friend, Connection co) throws SQLException, InstantiationException, IllegalAccessException, ClassNotFoundException{
-        // recuperer l'id via l'index
-        int id = getIdWithKey(key, co);
-       
-        //Ajout dans la table amis de la relation
-        String query = "DELETE FROM friends WHERE source = "+id+"AND cible = "+id_friend+ ");";
-        Statement st = co.createStatement();
-       
-        //close connections
-        st.close();
-        return     ServicesTools.serviceAccepted("Ami supprimé");
-   
-    }
-
-	
-	
+   	
 }

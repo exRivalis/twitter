@@ -22,6 +22,11 @@ public class Message {
 		DBCollection col = Database.getCollection("messages");
 		
 		//creation et ajout message a la mongoDB
-		return MessageTools.CreateMessage(key, text, col, co);
+		JSONObject res = MessageTools.CreateMessage(key, text, col, co);
+		
+		//close connections
+		co.close();
+		
+		return res;
 	}
 }

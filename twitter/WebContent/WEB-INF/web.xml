@@ -16,6 +16,14 @@
 		<servlet-class>servlet.user.Logout</servlet-class> 
 	</servlet> 
 	<servlet> 
+		<servlet-name>addFriend</servlet-name> 
+		<servlet-class>servlet.friends.AddFriend</servlet-class> 
+	</servlet>
+	<servlet> 
+		<servlet-name>removeFriend</servlet-name> 
+		<servlet-class>servlet.friends.RemoveFriend</servlet-class> 
+	</servlet> 
+	<servlet> 
 		<servlet-name>message</servlet-name> 
 		<servlet-class>servlet.message.CreateMessage</servlet-class> 
 	</servlet> 
@@ -33,6 +41,14 @@
 	<servlet-mapping> 
 		<servlet-name>logout</servlet-name> 
 		<url-pattern>/user/logout</url-pattern> 
+	</servlet-mapping>
+	<servlet-mapping> 
+		<servlet-name>addFriend</servlet-name> 
+		<url-pattern>/friends/add</url-pattern> 
+	</servlet-mapping>
+	<servlet-mapping> 
+		<servlet-name>removeFriend</servlet-name> 
+		<url-pattern>/friends/remove</url-pattern> 
 	</servlet-mapping>
 	<servlet-mapping> 
 		<servlet-name>message</servlet-name> 

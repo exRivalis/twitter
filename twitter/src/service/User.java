@@ -39,7 +39,7 @@ public class User {
 		//creation connection
 		Class.forName("com.mysql.jdbc.Driver").newInstance();
 	    Connection co = Database.getMySQLConnection();
-		
+		//SONObject res;
 		if (login == null || mdp == null) {
 			return ServicesTools.serviceRefused("argument manquant", -1);
 		}
