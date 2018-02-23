@@ -13,7 +13,7 @@ import tools.MessageTools;
 
 public class Message {
 	//create a new message
-	public static JSONObject CreateMessage(String key, String text) throws SQLException, InstantiationException, IllegalAccessException, ClassNotFoundException, UnknownHostException {
+	public static JSONObject createMessage(String key, String text) throws SQLException, InstantiationException, IllegalAccessException, ClassNotFoundException, UnknownHostException {
 		//creation connection
 		Class.forName("com.mysql.jdbc.Driver").newInstance();
 	    Connection co = Database.getMySQLConnection();
@@ -22,7 +22,7 @@ public class Message {
 		DBCollection col = Database.getCollection("messages");
 		
 		//creation et ajout message a la mongoDB
-		JSONObject res = MessageTools.CreateMessage(key, text, col, co);
+		JSONObject res = MessageTools.createMessage(key, text, col, co);
 		
 		//close connections
 		co.close();

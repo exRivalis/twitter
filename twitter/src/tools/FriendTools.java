@@ -1,9 +1,11 @@
 package tools;
 
 import java.sql.Connection;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 public class FriendTools {
@@ -62,6 +64,39 @@ public class FriendTools {
        
         return res;
    
+    }
+    
+    //cherche un amis avec nom, prenom ou les deux
+    public static JSONObject search(String nom, String prenom, Connection co) throws SQLException, JSONException {
+    	JSONObject users = new JSONObject(), res;
+    	
+    	String query;
+    	//si prenom = null on cherche selon nom
+    	if(prenom == null)
+    		query = "SELECT * FROM users WHERE nom = '" +nom+"';";
+    	//sinon si nom = null on cherche selon prenom
+    	else if (nom == null)
+    		query = "SELECT * FROM users WHERE prenom = '"+prenom+"';";
+    	//sinon on cherche selon les deux
+    	else
+    		query = "SELECT * FROM users WHERE nom = '" +nom+ "' OR prenom = '"+prenom+"';";
+    	
+    	Statement st = co.createStatement();
+		ResultSet cursor = st.executeQuery(query);
+		while(cursor.next()) {
+			//ajout resultats de la requete a mon json object
+			users.put(cursor.getString("id"), cursor);
+		}
+		if(users.length() > 0) {
+			//si au moins un user repondant aux criteres, on les ajoute au json
+			res = ServicesTools.serviceAccepted("found");
+			res.put("users", users);
+		}else {
+			//sinon on previent que pas de resultats
+			res = ServicesTools.serviceAccepted("empty");
+		}
+		
+		return res;
     }
 
 }

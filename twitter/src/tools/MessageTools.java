@@ -13,7 +13,7 @@ import com.mongodb.DBCollection;
 public class MessageTools {
 	
 	//creer et ajouter un message a la mongoDB
-	public static JSONObject CreateMessage(String key, String text, DBCollection col, Connection co) throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException {
+	public static JSONObject createMessage(String key, String text, DBCollection col, Connection co) throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException {
 		//creation du contenu du message
 		BasicDBObject message = new BasicDBObject();
 		//on recup user_id avec key

@@ -21,7 +21,7 @@ public class CreateMessage extends HttpServlet{
 		JSONObject result = new JSONObject();//contien la reponse seucces/echec
 		
 		try {
-			result = service.Message.CreateMessage(key, text);
+			result = service.Message.createMessage(key, text);
 		}catch(Exception e) {
 			e.printStackTrace();
 		}

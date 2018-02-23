@@ -16,11 +16,7 @@ class FriendTest {
 	//ajout correctement
 	@Test
 	void testAddFriend() throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException, JSONException {
-		//creation connection
-		Class.forName("com.mysql.jdbc.Driver").newInstance();
-	    Connection co = Database.getMySQLConnection();
-	    
-		JSONObject result = tools.FriendTools.addFriend("bExympTvaNCJKnTnIhNhilvVpiKooykb", "3", co);
+		JSONObject result = service.Friend.addFriend("bExympTvaNCJKnTnIhNhilvVpiKooykb", "3");
 		
 		assertEquals("OK", result.get("status"));
 	}
@@ -28,34 +24,57 @@ class FriendTest {
 	//supprime correctement
 	@Test
 	void testRemoveFriend() throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException, JSONException {
-		//creation connection
-		Class.forName("com.mysql.jdbc.Driver").newInstance();
-	    Connection co = Database.getMySQLConnection();
+		
 	    
-		JSONObject result = tools.FriendTools.removeFriend("bExympTvaNCJKnTnIhNhilvVpiKooykb", "3", co);
+		JSONObject result = service.Friend.removeFriend("bExympTvaNCJKnTnIhNhilvVpiKooykb", "3");
 		
 		assertEquals("OK", result.get("status"));
 	}
 	
 	//n'ajoute pas car inexistant
 	void testAddFriendErro() throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException, JSONException {
-		//creation connection
-		Class.forName("com.mysql.jdbc.Driver").newInstance();
-	    Connection co = Database.getMySQLConnection();
 	    
-		JSONObject result = tools.FriendTools.addFriend("bExympTvaNCJKnTsIhNhilvVpiKooykb", "3", co);
+		JSONObject result = service.Friend.addFriend("bExympTvaNCJKnTsIhNhilvVpiKooykb", "3");
 		
 		assertEquals("KO", result.get("status"));
 	}
 	//ne supprime pas car introuvable
 	@Test
 	void testRemoveFriendError() throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException, JSONException {
-		//creation connection
-		Class.forName("com.mysql.jdbc.Driver").newInstance();
-	    Connection co = Database.getMySQLConnection();
-	    
-		JSONObject result = tools.FriendTools.removeFriend("bExyabTvaNCJKnTnIhNhilvVpiKooykb", "16", co);
+		JSONObject result = service.Friend.removeFriend("bExyabTvaNCJKnTnIhNhilvVpiKooykb", "16");
 		
 		assertEquals("KO", result.get("status"));
+	}
+	
+	//trouve un user existant avec nom et prenom
+	@Test
+	void testSearch() throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException, JSONException {
+		JSONObject result = service.Friend.search("jack", "brown");
+		
+		assertEquals("found", result.get("message"));
+	}
+	
+	//trouve un user existant avec nom et prenom
+	@Test
+	void testSearchNom() throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException, JSONException {
+		JSONObject result = service.Friend.searchNom("jack");
+		
+		assertEquals("found", result.get("message"));
+	}
+	
+	//trouve un user existant avec nom et prenom
+	@Test
+	void testSearchPrenom() throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException, JSONException {
+		JSONObject result = service.Friend.searchPrenom("brown");
+		
+		assertEquals("found", result.get("message"));
+	}
+	
+	//trouve un user inexistant
+	@Test
+	void testSearchError() throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException, JSONException {
+		JSONObject result = service.Friend.search("jackooo", "brolkksa");
+		
+		assertEquals("empty", result.get("message"));
 	}
 }
