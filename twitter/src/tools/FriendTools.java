@@ -53,10 +53,21 @@ public class FriendTools {
         }else if(!UserTools.checkID(id_friend, co)){
         	res = ServicesTools.serviceRefused("id_friend invalide", -10);
         }else {
-        	//Ajout dans la table amis de la relation
-            String query = "DELETE FROM friends WHERE source = "+id+" AND cible = "+id_friend+ ";";
-            Statement st = co.createStatement();
-            st.executeUpdate(query);
+        	Statement st = co.createStatement();
+        	
+        	//verif s'ils sont amis ou si id s'invente une vie
+        	String query = "SELECT * FROM friends WHERE source = '"+id+"' AND cible = '"+id_friend+"';";
+        	ResultSet cursor = st.executeQuery(query);
+        	
+        	if(cursor.next()) {
+        		//supprimer de la table
+                query = "DELETE FROM friends WHERE source = "+id+" AND cible = "+id_friend+ ";";	
+                st.executeUpdate(query);
+        	}else {
+        		res = ServicesTools.serviceRefused("ne sont pas amis", -10);
+        	}
+        	
+            
             //close connections
             st.close();
         }
@@ -79,13 +90,20 @@ public class FriendTools {
     		query = "SELECT * FROM users WHERE prenom = '"+prenom+"';";
     	//sinon on cherche selon les deux
     	else
-    		query = "SELECT * FROM users WHERE nom = '" +nom+ "' OR prenom = '"+prenom+"';";
+    		query = "SELECT * FROM users WHERE nom = '" +nom+ "' AND prenom = '"+prenom+"';";
     	
     	Statement st = co.createStatement();
 		ResultSet cursor = st.executeQuery(query);
 		while(cursor.next()) {
+			//creation JSONObkect decrivant chaque user trouve
+			JSONObject u = new JSONObject();
+			u.put("id", cursor.getString("id"));
+			u.put("login", cursor.getString("login"));
+			u.put("nom", cursor.getString("nom"));
+			u.put("prenom", cursor.getString("prenom"));
+			
 			//ajout resultats de la requete a mon json object
-			users.put(cursor.getString("id"), cursor);
+			users.put(cursor.getString("login"), u);
 		}
 		if(users.length() > 0) {
 			//si au moins un user repondant aux criteres, on les ajoute au json

@@ -24,13 +24,13 @@
 		<servlet-class>servlet.friends.RemoveFriend</servlet-class> 
 	</servlet> 
 	<servlet> 
+		<servlet-name>search</servlet-name> 
+		<servlet-class>servlet.friends.Search</servlet-class> 
+	</servlet> 
+	<servlet> 
 		<servlet-name>message</servlet-name> 
 		<servlet-class>servlet.message.CreateMessage</servlet-class> 
 	</servlet>
-	<servlet> 
-		<servlet-name>search</servlet-name> 
-		<servlet-class>servlet.friend.Search</servlet-class> 
-	</servlet> 
 	
 	
 
@@ -55,12 +55,12 @@
 		<url-pattern>/friends/remove</url-pattern> 
 	</servlet-mapping>
 	<servlet-mapping> 
-		<servlet-name>message</servlet-name> 
-		<url-pattern>/message/create</url-pattern> 
-	</servlet-mapping>
-	<servlet-mapping> 
 		<servlet-name>search</servlet-name> 
 		<url-pattern>/friends/search</url-pattern> 
+	</servlet-mapping>
+	<servlet-mapping> 
+		<servlet-name>message</servlet-name> 
+		<url-pattern>/message/create</url-pattern> 
 	</servlet-mapping>
 
 
