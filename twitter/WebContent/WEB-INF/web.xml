@@ -31,6 +31,12 @@
 		<servlet-name>message</servlet-name> 
 		<servlet-class>servlet.message.CreateMessage</servlet-class> 
 	</servlet>
+	<servlet> 
+		<servlet-name>listMessage</servlet-name> 
+		<servlet-class>servlet.message.ListMessages</servlet-class> 
+	</servlet>
+	
+	
 	
 	
 
@@ -62,6 +68,12 @@
 		<servlet-name>message</servlet-name> 
 		<url-pattern>/message/create</url-pattern> 
 	</servlet-mapping>
+	<servlet-mapping> 
+		<servlet-name>listMessage</servlet-name> 
+		<url-pattern>/message/list</url-pattern> 
+	</servlet-mapping>
+	
+	
 
 
 	<resource-ref>

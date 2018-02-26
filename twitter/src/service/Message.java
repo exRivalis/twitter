@@ -29,4 +29,23 @@ public class Message {
 		
 		return res;
 	}
+	
+	//recup message d'un user en particuler
+		public static JSONObject listMessages(String key) throws SQLException, InstantiationException, IllegalAccessException, ClassNotFoundException, UnknownHostException {
+			//creation connection
+			Class.forName("com.mysql.jdbc.Driver").newInstance();
+		    Connection co = Database.getMySQLConnection();
+		    
+			//connection mongoDB
+			DBCollection col = Database.getCollection("messages");
+			
+			//recuperation de la liste des messages
+			JSONObject res = MessageTools.listMessages(key,col, co);
+			
+			//close connections
+			co.close();
+			
+			return res;
+			
+		}
 }

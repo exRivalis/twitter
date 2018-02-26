@@ -4,7 +4,6 @@
 <fullyQualifiedTypeName name="java.util.Map"/>
 <fullyQualifiedTypeName name="twitterium.Addition"/>
 <fullyQualifiedTypeName name="services.Operation"/>
-<fullyQualifiedTypeName name="javax.servlet.http.HttpServlet"/>
 <fullyQualifiedTypeName name="javax.servlet.http.HttpServletRequest"/>
 <fullyQualifiedTypeName name="java.io.IOException"/>
 <fullyQualifiedTypeName name="javax.servlet.http.HttpServletResponse"/>
@@ -25,4 +24,6 @@
 <fullyQualifiedTypeName name="tools.FriendTools"/>
 <fullyQualifiedTypeName name="test.UserTest"/>
 <fullyQualifiedTypeName name="service.User"/>
+<fullyQualifiedTypeName name="javax.servlet.http.HttpServlet"/>
+<fullyQualifiedTypeName name="service.Friend"/>
 </qualifiedTypeNameHistroy>
