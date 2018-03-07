@@ -66,4 +66,13 @@ public class Friend {
 			    
 			    return FriendTools.search(null, prenom, co);
 	}
+	
+	//recup amis du user
+	public static JSONObject ListFriends(String key) throws SQLException, JSONException, InstantiationException, IllegalAccessException, ClassNotFoundException {
+		//etablissement connexion
+				Class.forName("com.mysql.jdbc.Driver").newInstance();
+			    Connection co = Database.getMySQLConnection();
+			    
+			    return FriendTools.listFriends(key, co);
+	}
 }

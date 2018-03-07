@@ -116,5 +116,31 @@ public class FriendTools {
 		
 		return res;
     }
+    
+    //list des amis du user
+  //cherche un amis avec nom, prenom ou les deux
+    public static JSONObject listFriends(String key, Connection co) throws SQLException, JSONException, InstantiationException, IllegalAccessException, ClassNotFoundException {
+    	JSONObject users = new JSONObject(), res;
+    	
+    	int user_id = UserTools.getIdWithKey(key, co);
+    	
+    	String query = "SELECT cible FROM friends WHERE source= '" +user_id+ "';";
+    	
+    	Statement st = co.createStatement();
+		ResultSet cursor = st.executeQuery(query);
+		while(cursor.next()) {
+			//pour chaque id on recup user info
+			//creation JSONObkect decrivant chaque user trouve
+			int id = cursor.getInt("cible");
+			JSONObject user = UserTools.getInfo(id, co);
+			//System.out.println(id);
+			
+			users.put(""+id, UserTools.getInfo(id, co));
+			
+		}
+		
+		
+		return users;
+    }
 
 }

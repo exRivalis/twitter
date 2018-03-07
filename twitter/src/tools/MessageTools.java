@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.Iterator;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -35,6 +36,7 @@ public class MessageTools {
 		return ServicesTools.serviceAccepted("message ajoute");
 	}
 
+	//list my messages
 	public static JSONObject listMessages(String key, DBCollection col, Connection co) throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException {
 		JSONObject messages = new JSONObject();
 		JSONObject result = new JSONObject();
@@ -45,7 +47,7 @@ public class MessageTools {
         	return ServicesTools.serviceRefused("user inexistant", -1);
         }
         BasicDBObject query = new BasicDBObject();
-        query = (BasicDBObject) query.put("id_user", id);
+        query.put("user_id", id);
         // recuperation des messages de l'id
         DBCursor cursor = col.find(query);
         while(cursor.hasNext()) {
@@ -67,6 +69,78 @@ public class MessageTools {
 		}
 		
         return result;
+	}
+	
+	//list all messages
+	public static JSONObject listAllMessages(DBCollection col)  {
+		JSONObject messages = new JSONObject();
+		JSONObject result = new JSONObject();
+		int cpt = 0;
+		// recuperer l'id via l'index
+		
+        
+        // recuperation de tous les messages
+        DBCursor cursor = col.find();
+        while(cursor.hasNext()) {
+        	//affichage de chaque messages
+        	try {
+				messages.put(""+cpt++, cursor.next());
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+        }
+        
+        result = ServicesTools.serviceAccepted("liste des messages");
+        try {
+			result.put("messages", messages);
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+        return result;
+	}
+	
+	//list message des amis
+	//list all messages
+	public static JSONObject listMessagesFriends(String key, DBCollection col, Connection co) throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException, JSONException  {
+		JSONObject messages = new JSONObject();
+		JSONObject result = new JSONObject();
+		int cpt = 0;
+		// recuperer id friends
+		JSONObject friends = FriendTools.listFriends(key, co);
+		
+		//pour chaque amis recup les message et ajouter au jsonobject messages
+		Iterator<?> keys = friends.keys();
+		while(keys.hasNext()) {
+			int f_id = Integer.parseInt((String)keys.next());
+			messages.put(""+f_id, listMessagesId(f_id, col, co));
+		}		
+        return messages;
+	}
+	
+	//list my messages
+	public static JSONObject listMessagesId(int id, DBCollection col, Connection co) throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException {
+		JSONObject messages = new JSONObject();
+		JSONObject result = new JSONObject();
+		int cpt = 0;
+		
+        BasicDBObject query = new BasicDBObject();
+        query.put("user_id", id);
+        // recuperation des messages de l'id
+        DBCursor cursor = col.find(query);
+        while(cursor.hasNext()) {
+        	//affichage de chaque messages
+        	try {
+				messages.put(""+cpt++, cursor.next());
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+        }
+        		
+        return messages;
 	}
 }
 

@@ -215,5 +215,26 @@ public class UserTools {
         //si la cle est correcte on renvoie l'id, -1 sinon
         return id;
     }
+	
+	//recup info user avec id
+	public static JSONObject getInfo(int id, Connection co) throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException, JSONException {
+		JSONObject result = new JSONObject();
+		//recupere l'id du detenteur de cette clé
+        String query = "SELECT login, nom, prenom FROM users WHERE id='" + id + "';";
+        Statement st = co.createStatement();
+        ResultSet res = st.executeQuery(query);
+        ResultSet cursor = st.executeQuery(query);
+        while(cursor.next()) {
+			result.put("login", cursor.getString("login"));
+			result.put("nom", cursor.getString("nom"));
+			result.put("prenom", cursor.getString("prenom"));
+		}
+        
+        //Close connections
+        res.close();
+        st.close();
+        //si la cle est correcte on renvoie l'id, -1 sinon
+        return result;
+	}
    	
 }

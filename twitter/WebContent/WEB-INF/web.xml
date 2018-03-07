@@ -35,7 +35,18 @@
 		<servlet-name>listMessage</servlet-name> 
 		<servlet-class>servlet.message.ListMessages</servlet-class> 
 	</servlet>
-	
+	<servlet> 
+		<servlet-name>listAllMessage</servlet-name> 
+		<servlet-class>servlet.message.ListAllMessages</servlet-class> 
+	</servlet>
+	<servlet> 
+		<servlet-name>listFriends</servlet-name> 
+		<servlet-class>servlet.friends.ListFriends</servlet-class> 
+	</servlet>
+	<servlet> 
+		<servlet-name>listMessagesFriends</servlet-name> 
+		<servlet-class>servlet.message.ListMessagesFriends</servlet-class> 
+	</servlet>
 	
 	
 	
@@ -72,7 +83,18 @@
 		<servlet-name>listMessage</servlet-name> 
 		<url-pattern>/message/list</url-pattern> 
 	</servlet-mapping>
-	
+	<servlet-mapping> 
+		<servlet-name>listAllMessage</servlet-name> 
+		<url-pattern>/message/listall</url-pattern> 
+	</servlet-mapping>
+	<servlet-mapping> 
+		<servlet-name>listFriends</servlet-name> 
+		<url-pattern>/friends/listfriends</url-pattern> 
+	</servlet-mapping>
+	<servlet-mapping> 
+		<servlet-name>listMessagesFriends</servlet-name> 
+		<url-pattern>/message/listmfriends</url-pattern> 
+	</servlet-mapping>
 	
 
 
