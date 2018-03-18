@@ -70,13 +70,18 @@ body{
 	height: 100%;
 }
 
-#deco{
+#logout{
 	display: inline-block;
 	text-align: center;
 	vertical-align: middle;
 	margin: auto;
 	width:10%;
 	height: 100%;
+}
+#logout_btn{
+	/*text-align: center;*/
+	/*vertical-align: middle;*/
+	margin-top: 15%;
 }
 
 /* corps de la page */

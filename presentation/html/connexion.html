@@ -6,25 +6,26 @@
 	</head>
 
 	<body>
-		<form method="get">
-			<div>
-				<span class="span_text">Login</span>
-				<span class="span_input"><input type="text" name="login"></span>
-			</div>
-
-			<div>
-				<span class="span_text">Mot de passe</span>
-				<span class="span_input"><input type="password" name="psw"></span>
-			</div>
-
-			<div>
-				<span class="span_btn"><input type="submit" value="Connexion"></span>
-				<span class="span_link">
-					<div>
-
+		<div id="central">
+			<form class="rounded"method="get">
+				<div id="upper_div">
+					<div id="text_div">
+						<div class="span_text">Login</div>
+						<div class="span_text">Mot de passe</div>
 					</div>
-				</span>
-			</div>
-		</form>
+
+					<div id="input_div">
+						<div class="span_input"><input class="text_input" type="text" name="login"></div>
+						<div class="span_input"><input class="text_input" type="password" name="psw"></div>
+					</div>
+				</div>
+				<div id="lower_div">
+					<span class="span_btn"><input class="button" type="submit" value="Connexion"></span>
+					<span class="span_link">
+						<a class="link" href="./main.html">Pas encore inscrit?</a>
+					</span>
+				</div>
+			</form>
+		</div>
 	</body>
 </html>

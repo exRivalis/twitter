@@ -1,10 +1,98 @@
-.span_text{
-	width: 20%;
-	height: 100%;
-	text-align: center;
+@font-face {
+	font-family: 'icomoon';
+	src:url('https://jlalovi-cv.herokuapp.com/font/icomoon.woff');
+	font-weight: normal;
+	color: #20243F;
 }
-.span_input{
-	width: 79%;
+body{
+	background-color: #20243F;
+}
+.span_text{
+	width: 400px;
 	height: 100%;
-	text-align: center;
+	vertical-align: middle;
+	margin-bottom: 20px;
+}
+/*
+.span_input{
+	margin-left: 100px;
+	width:auto;
+	height: 100%;
+	vertical-align: middle;
+}*/
+
+/*.lower_div{
+	display: inline-block;
+}
+
+.upper_div{
+	display: inline-block;
+}*/
+.span_link{
+	vertical-align: middle;
+	margin-left: 30%;
+}
+
+.text_input{
+	height: 25px;
+	width: 80%;
+	/*margin-left: 20px;*/
+	margin-bottom: 20px;
+	padding-left: 15px;
+	background: #50597b;
+	color: #fff;
+	font-size: 15px;
+	border: solid 1px #1f253d;
+	border-radius: 5px;
+}
+
+.button{
+	border: none;
+	background-color: #11A8AB;
+	font-size: 16px;
+    margin: 4px 2px;
+	padding: 6px 22px;
+	border-radius: 10px;
+    -webkit-transition-duration: 0.4s; /* Safari */
+    transition-duration: 0.4s;
+}
+.button:hover{
+	background-color: #0F9295;
+}
+
+.rounded{
+	font-family: icomoon;
+	color: white;
+	border-radius: 10px;
+	background-color: #394166;
+
+	padding-left: 45px;
+	/*padding-right: 45px;*/
+	padding-top: 20px;
+	padding-bottom: 20px;
+
+}
+
+.link{
+	color: #11A8AB;
+}
+
+#central{
+	margin-top: 100px;
+	align-items: center;
+  	display: flex;
+  	justify-content: center;
+	width:100%;
+}
+
+#text_div{
+	display: inline-block;
+	width: 50%;
+	vertical-align: middle;
+}
+
+#input_div{
+	display: inline-block;
+	width: 49%;
+	vertical-align: middle;
 }
