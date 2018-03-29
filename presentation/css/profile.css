@@ -8,6 +8,40 @@ body{
 	background-color: #20243F;
 }
 
+.banniere{
+	border-color: #E96512;
+	border-width: 0px;
+	border-style:outset;
+	width: 100%;
+	height: 160px;
+}
+.photo_de_profil{
+	margin-top: 15px;
+	margin-left: 45%;
+	margin-right: 45%
+	text-align: center;
+	background: transparent;
+	border-color: white;
+	border-width: 0 0 1px;
+	border-style: solid;
+}
+/*
+#new_message{
+	text-align: center;
+	padding-bottom: 5px;
+	padding-top: 5px;
+	margin-bottom: 10px;
+	display: inline-block;
+	width: 89%;
+	height: 100%;
+}
+#messages{
+	text-align: center;
+	margin-top: 20px;
+	width: 100%;
+	height: auto;
+}
+*/
 .button{
 	border: none;
 	background-color: #11A8AB;
@@ -33,17 +67,31 @@ body{
 	border-radius: 5px;
 }
 
-#messages{
+.rounded_div{
+	font-family: icomoon;
+	color: white;
+	border-radius: 10px;
+	background-color: #394166;
 	margin-top: 20px;
-	width: 100%;
-	height: auto;
+	margin-bottom: 20px;
+	padding-left: 45px;
+	padding-right: 45px;
 }
-.message{
-
-	margin-top: 5px;
-	margin-bottom: 6px;
+#search_bar{
+	margin: 4px 2px;
+	padding: 6px 22px;
+	border-radius: 10px;
 }
+#top{
+	width: 90%;
+	margin-left: 5%;
+	height: 100px;
 
-.perso{
-	
+}
+#logo{
+	display: inline-block;
+	/*text-align: center;*/
+	/*vertical-align: middle;*/
+	width:10%;
+	height: 100%;
 }

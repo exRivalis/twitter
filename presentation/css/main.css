@@ -159,3 +159,21 @@ body{
 	margin-bottom: 10px;
 	text-align: center;
 }
+/* pour profile */
+.banniere{
+	border-color: #E96512;
+	border-width: 0px;
+	border-style:outset;
+	width: 100%;
+	height: 160px;
+}
+.photo_de_profil{
+	margin-top: 15px;
+	margin-left: 45%;
+	margin-right: 45%
+	text-align: center;
+	background: transparent;
+	border-color: white;
+	border-width: 0 0 1px;
+	border-style: solid;
+}

@@ -6,23 +6,29 @@
 		<title>Profil</title>
 </head>
 <body>
-	<div class="header">
-		<!-- <img src="../ressources/banniere_twitterium.png" name="banniere" width="1500" height="150"> -->
+	<div class="banniere">
+		<img src="../ressources/banniere_twitterium.jpg" name="banniere" class="banniere">
 	</div>
 
-	<div class="perso">
-		<img src="../ressources/photo_de_profil" height="150" width="150" >
+	<div class="middle">
+		<img src="../ressources/photo_de_profil.jpg" name="photo_de_profil" class="photo_de_profil" width="150" height="150">
+	</div>
 
-		<div id="new_message" class="rounded_div">
-			<div>Nouveau message</div>
-				<input class="text_input" type="text" id="new_message_input">
-					<div id=new_message_btn>
-				<input type="submit" class="button" id="post_btn" value="Poster">
+	<div id="corps_page">
+			<!-- zone de statistiques -->
+			<div id="friends" class="rounded_div">
+				<div>Amis</div>
 			</div>
-		</div>
-	</div>
-
-	<div id="messages" class="rounded_div">
+			<!-- nouveau message & liste messages -->
+			<div id="corps_messages">
+				<div id="new_message" class="rounded_div">
+					<div>Nouveau message</div>
+					<input class="text_input" type="text" id="new_message_input">
+					<div id=new_message_btn>
+						<input type="submit" class="button" id="post_btn" value="Poster">
+					</div>
+				</div>
+				<div id="messages" class="rounded_div">
 					<div>messages</div>
 					<div class="message">
 						<div id="nom"><div>Nom</div></div>
@@ -40,5 +46,14 @@
 						<div id="contenu_message"><div>Contenu</div></div>
 					</div>
 				</div>
+			</div>
+			<div id="suggestions" class="rounded_div">
+				<div>Suggestions</div>
+			</div>
+
+		</div>
+
+
+
 </body>
 </html>
