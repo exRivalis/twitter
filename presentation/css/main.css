@@ -65,23 +65,44 @@ body{
 	/*position: relative;*/
 	display: inline-block;
 	text-align: center;
-	vertical-align: middle;
-	width: 79%;
-	height: 100%;
+	vertical-align: top;
+	width: 70%;
+	height: 49%;
 }
-
-#logout{
+#log{
 	display: inline-block;
 	text-align: center;
 	vertical-align: middle;
 	margin: auto;
-	width:10%;
+	width:19%;
 	height: 100%;
 }
+#title{
+	/*position: relative;*/
+	padding-top: 20px;
+	display: inline-block;
+	text-align: center;
+	vertical-align: top;
+	width: 100%;
+	height: 50%;
+}
+#follow{
+	display: inline-block;
+	text-align: center;
+}
+#login{
+	display: inline-block;
+	text-align: center;
+	vertical-align: middle;
+	margin: auto;
+	width:100%;
+	height: 49%;
+}
+
 #logout_btn{
 	/*text-align: center;*/
 	/*vertical-align: middle;*/
-	margin-top: 15%;
+	margin-top: 10%;
 }
 
 /* corps de la page */

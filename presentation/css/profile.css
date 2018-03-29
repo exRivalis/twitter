@@ -1,0 +1,49 @@
+@font-face {
+	font-family: 'icomoon';
+	src:url('https://jlalovi-cv.herokuapp.com/font/icomoon.woff');
+	font-weight: normal;
+	color: #20243F;
+}
+body{
+	background-color: #20243F;
+}
+
+.button{
+	border: none;
+	background-color: #11A8AB;
+	font-size: 16px;
+    margin: 4px 2px;
+	padding: 6px 22px;
+	border-radius: 10px;
+    -webkit-transition-duration: 0.4s; /* Safari */
+    transition-duration: 0.4s;
+}
+.button:hover{
+	background-color: #0F9295;
+}
+
+.text_input{
+	/*background-color : #50597B;*/
+	margin-left: 20px;
+	margin-bottom: 20px;
+	padding-left: 45px;
+	background: #50597b;
+	color: #fff;
+	border: solid 1px #1f253d;
+	border-radius: 5px;
+}
+
+#messages{
+	margin-top: 20px;
+	width: 100%;
+	height: auto;
+}
+.message{
+
+	margin-top: 5px;
+	margin-bottom: 6px;
+}
+
+.perso{
+	
+}
