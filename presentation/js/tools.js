@@ -41,7 +41,7 @@ Comment.prototype.getHtml = function(){
 function init(){
 	noConnection = false;
 	env = new Object();
-	env.fromId = 1;
+	env.fromId = -1;
 	env.id = 4;
 	setVirtualMessages();
 }

@@ -7,6 +7,15 @@
 body{
 	background-color: #20243F;
 }
+
+h1 {
+	font-family: Arial, "Times New Roman";
+	font-weight: bold;
+	color:white;
+	text-align:center;
+	margin-bottom:30px;
+	text-shadow: 1px 1px Opx white;
+}
 .span_text{
 	width: 400px;
 	height: 100%;
@@ -50,11 +59,11 @@ body{
 	border: none;
 	background-color: #11A8AB;
 	font-size: 16px;
-    margin: 4px 2px;
+	margin: 4px 2px;
 	padding: 6px 22px;
 	border-radius: 10px;
-    -webkit-transition-duration: 0.4s; /* Safari */
-    transition-duration: 0.4s;
+	-webkit-transition-duration: 0.4s; /* Safari */
+	transition-duration: 0.4s;
 }
 
 .button:hover{
@@ -69,8 +78,8 @@ body{
 
 	padding-left: 45px;
 	/*padding-right: 45px;*/
-	padding-top: 20px;
-	padding-bottom: 20px;
+	padding-top: 40px;
+	padding-bottom: 20px;<label for="search_bar" >Recherche</label><br>
 
 }
 
@@ -79,22 +88,40 @@ body{
 }
 
 #central{
-	margin-top: 100px;
+	margin-top: 50px;
 	align-items: center;
-  	display: flex;
-  	justify-content: center;
+	display: flex;
+	justify-content: center;
 	width:100%;
 }
 
-.text_div{
+#lower_div{
+	/*margin-top: 5px;*/
+	align-items: center;
+	display: inline-block;
+	justify-content: center;
+	width:100%;
+}
+
+#insc_btn_div{
+	text-align: center;
+	display: inline-block;
+	width:100%;
+}
+#insc_link_div{
+	text-align: center;
+	display: inline-block;
+	width:100%;
+}
+
+#text_div{
 	display: inline-block;
 	width: 50%;
 	vertical-align: middle;
-	float: left;
 }
-.input_div{
+
+#text_div{
 	display: inline-block;
-	width: 49%;
+	width: 50%;
 	vertical-align: middle;
-	float: right;
 }
