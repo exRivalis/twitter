@@ -77,7 +77,7 @@ body{
 	color: #11A8AB;
 }
 
-#central{
+#co_central{
 	margin-top: 100px;
 	align-items: center;
   	display: flex;
@@ -85,13 +85,13 @@ body{
 	width:100%;
 }
 
-#text_div{
+#co_text_div{
 	display: inline-block;
 	width: 50%;
 	vertical-align: middle;
 }
 
-#input_div{
+#co_input_div{
 	display: inline-block;
 	width: 49%;
 	vertical-align: middle;

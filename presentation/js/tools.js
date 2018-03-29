@@ -138,12 +138,21 @@ function makeMainPanel(){
 		html += "<div id='messages' class='rounded_div'></div><div id='suggestions' class='rounded_div'>";
 		html += "<div>Suggestions</div></div></div>";
 	}
-
-
-	// html += "</body></html>";
-	// return html;
 	$('body').html(html);
-	// alert(html);
+
+}
+
+function makeConnexionPanel(){
+	var html = "<div id='co_central'><form class='rounded' method='get'><div id='co_upper_div'>";
+	html += "<div id='co_text_div'><div class='span_text>Login</div>";
+	html += "<div class='span_text'>Mot de passe</div></div>";
+	html += "<div id='co_input_div'><div class='span_input'><input class='text_input' type='text' name='login'></div>";
+	html += "<div class='span_input'><input class='text_input' type='password' name='psw'></div></div></div>";
+	html +=	"<div id='co_lower_div'><span class='span_btn'><input class='button' type='submit' value='Connexion'></span>";
+	html += "<span class='span_link'><a class='link' href='./inscription.html'>Pas encore inscrit?</a></span>";
+	html += "</div></form></div>";
+
+	$('body').html(html);
 }
 
 //charge dynamiquement une autre page html
