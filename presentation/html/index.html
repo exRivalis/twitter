@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 	<head>
 		<link type="text/css" rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
 		<link rel="stylesheet" type="text/css" href="../css/main.css">
@@ -12,11 +13,15 @@
 
 		</div>
 		<script type="text/javascript">
-
-			$(init);
-			$(makeMainPanel);
-			// $('body').html(html);
+			var env;
+		
+			// console.log(env.noConnection);
+			var localdb = []
+			var follows = []
+			$(init());
+			$(makeMainPanel(-1, "Wayne"));
+			$(completeMessages());
+			// $(makeConnexionPanel)
 		</script>
-		<!-- <header id='top'> <div id='logo'><img src='../ressources/logo_twitterium.png' width=70px/> </div><div id='z_recherche'><form ><label for='search_bar' >Recherche</label><br><input class='text_input' type='text' id='search_bar'/><input type='checkbox' id='in_friends'/><input type='submit' class='button' id='search_btn' value='Recherche'></form></div><div id='logout'><img id='logout_btn' src='../ressources/logout.png'></div></div> -->
 	</body>
 </html>
