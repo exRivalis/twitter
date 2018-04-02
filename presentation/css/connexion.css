@@ -7,7 +7,7 @@
 body{
 	background-color: #20243F;
 }
-.span_text{
+.co_span_text{
 	width: 400px;
 	height: 100%;
 	vertical-align: middle;
@@ -28,12 +28,12 @@ body{
 .upper_div{
 	display: inline-block;
 }*/
-.span_link{
+.co_span_link{
 	vertical-align: middle;
 	margin-left: 30%;
 }
 
-.text_input{
+.co_text_input{
 	height: 25px;
 	width: 80%;
 	/*margin-left: 20px;*/

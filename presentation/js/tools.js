@@ -10,13 +10,21 @@ function Message(id,auteur, texte, date, comments){
 }
 //renvoie le messaage sous format html interpretable durectement par le navigateur
 Message.prototype.getHtml = function(){
-	var html = "<div class='texte_message'>" + this.texte + "</div>";
+	//var html = "<div class='texte_message'>" + this.texte + "</div>";
 	//ecriture contenu du message et infos
 	html += "<div class='info_message'> <span class='auteur_message'> Posté par " + this.auteur.login + "</span><span class='date_message'> le " + this.date + "</span> </div>";
 
+	var html = "<div class='message' id='message_"+this.id+"'><div class='texte_message'>" + this.texte + "</div>";
+	html += "<span id='show_comments'><input onclick='developpeMessage("+this.id+")' type='image' src='../ressources/show.png'/></span>";
+	html += "<div class='info_message'><span class='auteur_message'>Posté par "+ this.auteur.login +"</span>";
+	html += "<span class='date_message'> le " + this.date.getDate()+"/"+this.date.getMonth()+ "/"+this.date.getYear()+"</span></div>"
+	// "/"+" à "+ this.date.getHours() +":"+this.date.getMinutes() +
+	html += "<div class='comments_message'>";
+
 	//ecriture des commentaires
-	//TODO refaire plus tard
-	html += "<div class='comments_message'>" + this.comments + " </div>"
+	//TODO
+
+	html += "</div><hr class='line'></div>";
 
 	return html;
 }
@@ -41,8 +49,10 @@ Comment.prototype.getHtml = function(){
 function init(){
 	noConnection = false;
 	env = new Object();
+	env.noConnection = true
 	env.fromId = -1;
-	env.id = 4;
+	env.id = -1;
+	env.msg = [];
 	setVirtualMessages();
 }
 
@@ -66,32 +76,41 @@ function setVirtualMessages(){
 	var comm2 = new Comment(466, 3, "C'etait mieux avant!", new Date('2018-03-23'));
 	var comm3 = new Comment(456, 1, "Non, le rap c'est mieux!", new Date('2018-03-23'));
 
-	localdb[2] = new Message(111, user2, "Waouh,je suis chaud xO", new Date('2018-03-20'), [comm1, comm2, comm3]);
+	localdb[0] = new Message(111, user2, "Waouh,je suis chaud xO", new Date('2018-03-20'), [comm1, comm2, comm3]);
 	localdb[1] = new Message(112, user1, "Moi aussi j'ai froid", new Date('2018-03-19'), [comm3, comm1, comm3]);
+	localdb[2] = new Message(145, user1, "Moi aussi j'ai froid", new Date('2018-03-19'), [comm3, comm1, comm3]);
 }
 
 
 //fabtication d'une page html contenant selon le cas une page profile d'aun autre, mon profile ou une page d'accueil
 //en fonction de env.fromId on adapte le contenu html et les fichier css importes
-function makeMainPanel(){
+function makeMainPanel(fromId, fromLogin){
 
 	var html = "<header class='rounded_div' id='top'> <div id='logo'><img src='../ressources/logo_twitterium.png' width=70px/> </div>";
 	html += "<div id='z_recherche'><form ><label for='search_bar' >Recherche</label><br>";
 	html+="<input class='text_input' type='text' id='search_bar'/><input type='checkbox' id='in_friends'/>";
 	html+="<input type='submit' class='button' id='search_btn' value='Recherche'></form></div>";
 	html+="<div id='log'>";
-	if(env.fromId == env.id){
+	if(fromId == env.id && env.id != -1){
+		//je suis connecte: afficher deconnexion
 		//my profile
 		html += "<div id='title'> Mon profile </div>";
+		html += "<div id='login'><a onclick='makeConnexionPanel()'>Connexion</a></div></div></div>"
 	}
-	else if(env.fromId > 0 && env.fromId != env.id){
+	else if(fromId > 0 && fromId != env.id){
+		//je suis connecte: afficher deconnexion
 		html += "<div id='title'> Profile de jkjkh	<div id='follow'><img src='../ressources/plus.png'></div></div>"
+		html += "<div id='login'><a onclick='makeConnexionPanel()'>Connexion</a></div></div></div>"
 	}
-	html += "<div id='login'><a class='link' href='./main.html'>Connexion</a></div></div></div>";
+	else{
+		//je ne suis pas connecte
+		html += "<div id='login'><input id='login_btn' onclick='makeConnexionPanel()' type='submit' value='connexion'/></div></div></div></header>"
+	}
+
 	//fin du header
 	//place au corps de la page
 
-	if(env.fromId < 0){
+	if(fromId < 0){
 		//Home
 		// html+="<div id='title'>Home</div>";
 		html += "<div id='corps_page'>";
@@ -104,22 +123,16 @@ function makeMainPanel(){
 		html += "<div>Nouveau message</div>";
 		html += "<input class='text_input' type='text' id='new_message_input'>";
 		html += "<div id=new_message_btn>";
-		html += "<input type='submit' class='button' id='post_btn' value='Poster'>";
+		html += "<input onclick='' type='submit' class='button' id='post_btn' value='Poster'>";
 		html += "</div></div>";
 		html += "<div id='messages' class='rounded_div'>";
-		html += "<div>messages</div><div class='message'>le contenu du message</div>";
-		html += "<div class='info_message'>";
-		html += "<span ...>posté par machin le machin</span>";
-		html += "</div><div class='message'>";
-		html += "<div id='nom'><div>Nom</div></div>"
-		html += "<div id='prenom'><div>Prenom</div></div><div id='contenu_message'><div>Contenu</div></div>";
-		html +=	"</div><div class='message'><div id='nom'><div>Nom</div></div>";
-		html += "<div id='prenom'><div>Prenom</div></div>";
-		html += "<div id='contenu_message'><div>Contenu</div></div></div></div></div>";
+		html += "<div>messages</div>"
+		html += "<div id='messages_container'></div>"
+		html += "</div></div>";
 		html += "</div>";
 
 	}
-	else if(env.fromId == env.id){
+	else if(fromId == env.id){
 		//mon profile
 		//TODO
 
@@ -144,17 +157,38 @@ function makeMainPanel(){
 
 function makeConnexionPanel(){
 	var html = "<div id='co_central'><form class='rounded' method='get'><div id='co_upper_div'>";
-	html += "<div id='co_text_div'><div class='span_text>Login</div>";
-	html += "<div class='span_text'>Mot de passe</div></div>";
-	html += "<div id='co_input_div'><div class='span_input'><input class='text_input' type='text' name='login'></div>";
-	html += "<div class='span_input'><input class='text_input' type='password' name='psw'></div></div></div>";
-	html +=	"<div id='co_lower_div'><span class='span_btn'><input class='button' type='submit' value='Connexion'></span>";
-	html += "<span class='span_link'><a class='link' href='./inscription.html'>Pas encore inscrit?</a></span>";
+	html += "<div id='co_text_div'>"
+	html += "<div class='co_span_text'>Login</div>";
+	html += "<div class='co_span_text'>Mot de passe</div></div>";
+	html += "<div id='co_input_div'>"
+	html += "<div><input class='co_text_input' type='text' name='login'></div>";
+	html += "<div><input class='co_text_input' type='password' name='psw'></div></div></div>";
+	html +=	"<div id='co_lower_div'><span><input class='button' type='submit' value='Connexion'></span>";
+	html += "<span class='co_span_link'><input id='insc_btn' onclick='makeRegisterPanel()' type='submit' value='Pas encore inscrit?'/></span>";
+	// html += "<div id='login'><input id='login_btn' onclick='makeConnexionPanel()' type='submit' value='connexion'/></div></div></div>"
 	html += "</div></form></div>";
 
 	$('body').html(html);
 }
 
+function makeRegisterPanel(){
+	html = "<h1 id='insc_h1'> Inscription </h1><div id='insc_central'>"
+	html += "<form class='insc_rounded' method='get'>"
+	html += "<div id='insc_input_div'>"
+	html += "<div class='span_text'><input class='insc_text_input' type='text' name='Prenom' placeholder='Prénom'></div>"
+	html += "<div class='span_text'><input class='insc_text_input' type='text' name='Nom' placeholder='Nom'></div>"
+	html += "<div class='span_text'><input class='insc_text_input' type='text' name='Login' placeholder='Login'></div>"
+	html += "<div class='span_text'><input class='insc_text_input' type='text' name='Email' placeholder='Email'></div>"
+	html += "<div class='span_text'><input class='insc_text_input' type='password' name='Mot de Passe' placeholder='Mot de Passe'></div>"
+	html += "<div class='span_text'><input class='insc_text_input' type='password' name='Retapez Mot de Passe' placeholder='Retapez votre Mot de Passe'></div>"
+	html += "</div></form></div></br></br>"
+	html += "<div id = 'insc_lower_div'><div id='insc_btn_div'>"
+	html += "<input id='insc_register_btn' class = 'button' type='submit' value='Enregitrer' >"
+	html += "<input id='insc_cancel_btn' class = 'button' type='submit' value='Annuler' ></div>"
+	html += "<div id='insc_link_div'><input id='insc_btn' onclick='makeConnexionPanel()' type='submit' value='Vous avez déjà un compte?'/></div></div>"
+
+	$('body').html(html);
+}
 //charge dynamiquement une autre page html
 function pageUser(id, login){
 	makeMainPanel(id, login, env.query);
@@ -182,4 +216,93 @@ function revival(key, value){
 	}
 	//dans le cas d'une erreur
 	return value;
+}
+
+//recup les messages du serveur ou de la bd local en cas de noConnection
+function completeMessages(){
+	var messages = []
+	if(env.noConnection){
+		//bd locale
+		messages = getFromLocalDb(-1, -1, -1, -1);
+
+
+	}
+	else{
+		// serveur
+		// TODO
+	}
+
+	messagesHtml = ""
+	for(var i=0; i<messages.length; i++){
+		messagesHtml += messages[i].getHtml();
+	}
+	$('#messages_container').html(messagesHtml);
+}
+
+//gestion de la réponse du serveur quand elle arrive
+function completeMessagesResponse(){
+	// TODO maj env.minId/ maxId/ msgs
+}
+
+//retourne une liste de messages a partir de la nd locale triée par ordre décroissant de l'id
+function getFromLocalDb(from, idMin, idMax, nbMax){
+	//from; id du proprietaire de la page concernee
+	var messages = []
+	for(var i=0; i<localdb.length; i++){
+		var m = localdb[i]
+		if(idMin > 0 && idMax >0){
+			if(m.id >= idMin && m.id < idMax){
+				messages.push(m)
+				if(messages.length == nbMax)
+					break;
+			}
+		}
+		else{
+			if(idMax < 0 ){
+				messages.push(m);
+				if(messages.length == nbMax)
+					break;
+			}
+			else{
+				if(m.id < idMax){
+					messages.push(m)
+					if(messages.length == nbMax)
+						break;
+				}
+			}
+		}
+	}
+
+	//maj env.msg avec les nouveau messages
+	for(var i =0; i<messages.length; i++){
+		var m = messages[i];
+		env.msg[m.id] = m;
+		// console.log(m);
+	}
+
+	//truer par ordre decroissant de l'id
+	messages.sort(function(a, b){return b.id - a.id});
+	return messages;
+}
+
+//commentaires
+//afficher les commentaires d'un messages
+function developpeMessage(id){
+	var m = env.msg[id];
+	// var el = $("#message_"+id+".comments_message");
+	$("#message_"+id).find("#show_comments").html("<input onclick='hideMessage("+id+")' type='image' src='../ressources/hide.png'/>");
+
+	$("#message_"+id).find(".comments_message").append(m.comments[0].getHtml());
+
+
+	// console.log(mmmm);
+}
+//cacher les commentaires d'un message
+function hideMessage(id){
+	var m = env.msg[id];
+	// var el = $("#message_"+id+".comments_message");
+	$("#message_"+id).find("#show_comments").html("<input onclick='developpeMessage("+id+")' type='image' src='../ressources/show.png'/>");
+
+	$("#message_"+id).find(".comments_message").html("");
+	// console.log(mmmm);
 }
