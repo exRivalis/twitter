@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<link type="text/css" rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+		<link rel="stylesheet" type="text/css" href="../css/main.css">
+		<title>Twitter</title>
+	</head>
+	<body>
+		<!-- zone Header -->
+		<!-- renmplacer la div suivante par un header -->
+		<div id="top" class="rounded_div">
+			<div id="logo">
+				<img src="../ressources/logo_twitterium.png" width=70px/>
+			</div>
+
+			<div id="z_recherche">
+				<form >
+					<input class="text_input" type="text" id="search_bar" placeholder="Recherche">
+					<input type="checkbox" id="in_friends">
+					<input type="submit" class="button" id="search_btn" value="Recherche">
+
+				</form>
+			</div>
+
+			<div id="log">
+				<div id="title"> Profile de jkjkh <div id="follow"><img src="../ressources/minus.png"></div></div>
+				<div id="login"><a class="link" href="./main.html">Connexion</a></div>
+			</div>
+		</div>
+
+		<!-- corps de la page -->
+		<div id="corps_page">
+			<!-- zone de statistiques -->
+			<div id="stats" class="rounded_div">
+				<div>stats</div>
+			</div>
+			<!-- nouveau message & liste messages -->
+			<div id="corps_messages">
+				<div id="new_message" class="rounded_div">
+					<div>Nouveau message</div>
+					<input class="text_input" type="text" id="new_message_input">
+					<div id=new_message_btn>
+						<input type="submit" class="button" id="post_btn" value="Poster">
+					</div>
+				</div>
+				<div id="messages" class="rounded_div">
+					<div>messages</div>
+					<div class="message">le contenu du message</div>
+					<div class="info_message">
+						<span ...>posté par machin le machin</span>
+					</div>
+					<div class="message">
+						<div id="nom"><div>Nom</div></div>
+						<div id="prenom"><div>Prenom</div></div>
+						<div id="contenu_message"><div>Contenu</div></div>
+					</div>
+					<div class="message">
+						<div id="nom"><div>Nom</div></div>
+						<div id="prenom"><div>Prenom</div></div>
+						<div id="contenu_message"><div>Contenu</div></div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</body>
+</html>

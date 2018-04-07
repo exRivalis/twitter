@@ -1,0 +1,49 @@
+package test;
+
+import java.sql.Connection;
+import java.sql.SQLException;
+
+import javax.swing.plaf.synth.SynthSeparatorUI;
+
+import bd.Database;
+
+public class Main {
+	public static void main(String[] args) throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException {
+		//creation connection
+		Class.forName("com.mysql.jdbc.Driver").newInstance();
+	    Connection co = Database.getMySQLConnection();
+		
+		Test.testAddUser("Jack", "mdp");
+		System.out.println("AJout utilisateur avec succes");
+		
+		if(Test.testCheckPasswd("Michel", "mdp"))
+			System.out.println("Test passwd avec succes");
+		else {
+			System.out.println("Test passwd echec");
+		}
+		
+		//test insertConncetion when login
+		if(Test.testInsertConnection("Jacko"))
+			System.out.println("Test passwd avec succes");
+		else {
+			System.out.println("Test passwd echec");
+		}
+		
+		//test isConnected
+		Test.testIsConnected("aphihYXBuSRZSUqTVACYEqMhvqwtXwsK");
+		System.out.println("Test isConnected avec succès");
+		
+		//test deconnection
+		if(Test.testLogout("aphihYXBuSRZSUqTVACYEqMhvqwtXwsK"))
+			System.out.println("Test deconnection avec succes");
+		else {
+			System.out.println("Test deconnection echec");
+		}
+		
+		//test getIdwidthKey
+		Test.testGetIdWithKey("aphihYXBuSRZSUqTVACYEqMhvqwtXwsK");
+		System.out.println("Succès getid with key");
+		
+		//
+	}
+}

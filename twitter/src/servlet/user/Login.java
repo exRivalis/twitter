@@ -18,17 +18,21 @@ public class Login extends HttpServlet {
 		String login = request.getParameter("login");
 		String mdp = request.getParameter("mdp");
 		JSONObject result = new JSONObject();
-		
-		if(login.length() == 0 || mdp.length() == 0)
+		System.out.println("hghhhh");
+		if(mdp == null || login == null) {
+			result = ServicesTools.serviceRefused("Arguments invalides", -1);
+		}
+		else if(login.length() == 0 || mdp.length() == 0)
 			result = ServicesTools.serviceRefused("Arguments invalides", -1);
 		
-		//call service login
-		try {
-			result = service.User.login(login, mdp);
-		}catch(Exception e) {
-			e.printStackTrace();
+		else {
+			//call service login
+			try {
+				result = service.User.login(login, mdp);
+			}catch(Exception e) {
+				e.printStackTrace();
+			}
 		}
-		
 		response.setContentType("text/plain");
 		PrintWriter out = response.getWriter();
 		
