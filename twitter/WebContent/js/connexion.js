@@ -13,15 +13,6 @@ function connexion(form){
 
 }
 
-function verif_connexion(login,passwd) {
-	if(login.length == 0 || passwd.length == 0){
-		alert("Argument manquant");
-		return false;
-	}
-	else{
-		return true;
-	}
-}
 
 // JSON.parse(res, revival)
 // integrer 
@@ -49,5 +40,93 @@ function connecte(login, pswd){
 function responseConnexion(resp){
     console.log("ok");
     alert("yahooo");
+
+}
+
+function erreur(message){
+    var msg = "<div id =\"message_erreur\">"+message+"></div>";
+    if(message.length <= 0){
+        $("form").prepend(msg);
+    }
+    else{
+        $("#erreur").replaceWith(msg);
+    }    
+    $("#erreur").css({"color":"red"}); 
+}
+
+
+function verif_connexion(login,passwd) {
+	if(login.length == 0 || passwd.length == 0){
+		erreur("Argument manquant");
+		return false;
+	}
+	else{
+		return true;
+	}
+}
+
+
+function inscription(nom,prenom,login,email,mdp,check_mdp){
+
+
+
+    var form = document.getElementById("form");
+    form.addEventListener('submit', function(e) {
+        var login = form.elements.login.value;
+        var nom = form.elements.nom.value;
+        var prenom = form.elements.prenom.value;
+        var mail = form.elements.mail.value;
+        var mdp = form.elements.mdp.value;
+        console.log(inscription(nom,prenom,login,email,mdp,check_mdp));
+            if(!ok){
+                console.log("la");
+            }else{
+                console.log("ok");
+                }
+                                                
+    });
+
+    var mdp = form.elements.mdp.value;
+    console.log(inscription(nom,prenom,login,email,mdp,check_mdp));
+        if(!ok){
+            console.log("la");
+        }else{
+            console.log("ok");
+            }
+                                                
+};
+
+// function connecte(login, passwd){
+// 	if(!noConnection){
+// 		$.ajax({
+// 			type : "get",
+// 			url : "/user/login",
+// 			data : "login=" + login + "&password=" + password,
+// 			success : function(rep){
+// 				connexionResponse(rep);
+// 			}
+// 			error : function(jqXHR, textStatus, errorThrown){
+// 				alert(textStatus),
+// 			} 
+// 		});
+// 	}else{
+// 		connexionResponse_local();
+// 	}
+	
+// }
+
+function connexionResponse(resp){
+	var status = resp.status;
+	if(status == "OK"){
+		var res = resp.res;
+		JSON.parse(res,revival);
+	}
+
+
+
+}
+
+function connexionResponse_local(){
+	return false;
 
 }

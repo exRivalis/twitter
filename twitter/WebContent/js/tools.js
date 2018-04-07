@@ -2,8 +2,8 @@
 //fabtication d'une page html contenant selon le cas une page profile d'aun autre, mon profile ou une page d'accueil
 //en fonction de env.fromId on adapte le contenu html et les fichier css importes
 function makeMainPanel(fromId, fromLogin){
-	var html = $("body").load("./html/fixedmenu.html")
-	html += "<header class='rounded_div' id='top'> <div id='logo'><img src='../ressources/logo_twitterium.png' width=70px/> </div>";
+	//var html = $("body").load("./html/fixedmenu.html")
+	var html = "<header class='rounded_div' id='top'> <div id='logo'><img src='../ressources/logo_twitterium.png' width=70px/> </div>";
 	html += "<div id='z_recherche'><form ><label for='search_bar' >Recherche</label><br>";
 	html+="<input class='text_input' type='text' id='search_bar'/><input type='checkbox' id='in_friends'/>";
 	html+="<input type='submit' class='button' id='search_btn' value='Recherche'></form></div>";
