@@ -1,0 +1,139 @@
+
+//fabtication d'une page html contenant selon le cas une page profile d'aun autre, mon profile ou une page d'accueil
+//en fonction de env.fromId on adapte le contenu html et les fichier css importes
+function makeMainPanel(fromId, fromLogin){
+	//var html = $("body").load("./html/fixedmenu.html")
+	var html = "<header class='rounded_div' id='top'> <div id='logo'><img src='../ressources/logo_twitterium.png' width=70px/> </div>";
+	html += "<div id='z_recherche'><form ><label for='search_bar' >Recherche</label><br>";
+	html+="<input class='text_input' type='text' id='search_bar'/><input type='checkbox' id='in_friends'/>";
+	html+="<input type='submit' class='button' id='search_btn' value='Recherche'></form></div>";
+	html+="<div id='log'>";
+	if(fromId == env.id && env.id != -1){
+		//je suis connecte: afficher deconnexion
+		//my profile
+		html += "<div id='title'> Mon profile </div>";
+		html += "<div id='login'><a onclick='makeConnexionPanel()'>Connexion</a></div></div></div>"
+	}
+	else if(fromId > 0 && fromId != env.id){
+		//je suis connecte: afficher deconnexion
+		html += "<div id='title'> Profile de jkjkh	<div id='follow'><img src='../ressources/plus.png'></div></div>"
+		html += "<div id='login'><a onclick='makeConnexionPanel()'>Connexion</a></div></div></div>"
+	}
+	else{
+		//je ne suis pas connecte
+		html += "<div id='login'><input id='login_btn' onclick='makeConnexionPanel()' type='submit' value='connexion'/></div></div></div></header>"
+	}
+
+	//fin du header
+	//place au corps de la page
+
+	if(fromId < 0){
+		//Home
+		// html+="<div id='title'>Home</div>";
+		html += "<div id='corps_page'>";
+		html +=	"<!-- zone de statistiques -->";
+		html +=	"<div id='stats' class='rounded_div'>";
+		html += "<div>stats</div></div>";
+		html += "<!-- nouveau message & liste messages -->";
+		html +=	"<div id='corps_messages'>";
+		html += "<div id='new_message' class='rounded_div'>";
+		html += "<div>Nouveau message</div>";
+		html += "<input class='text_input' type='text' id='new_message_input'>";
+		html += "<div id=new_message_btn>";
+		html += "<input onclick='' type='submit' class='button' id='post_btn' value='Poster'>";
+		html += "</div></div>";
+		html += "<div id='messages' class='rounded_div'>";
+		html += "<div>messages</div>"
+		html += "<div id='messages_container'></div>"
+		html += "</div></div>";
+		html += "</div>";
+
+	}
+	else if(fromId == env.id){
+		//mon profile
+		//TODO
+
+	}
+	else{
+		//profile de quelqu'un d'autre
+		//TODO
+		html += "	<div class='banniere'><img src='../ressources/banniere_twitterium.jpg' name='banniere' class='banniere'>";
+		html += "</div><div class='middle'>";
+		html += "<img src='../ressources/photo_de_profil.jpg' name='photo_de_profil' class='photo_de_profil' width='150' height='150'></div>";
+		html += "<div id='corps_page'><!-- zone de statistiques --><div id='friends' class='rounded_div'>";
+		html += "<div>Amis</div></div><!-- nouveau message & liste messages --><div id='corps_messages'>";
+		html +=	"<div id='new_message' class='rounded_div'><div>Nouveau message</div>";
+		html += "<input class='text_input' type='text' id='new_message_input'><div id=new_message_btn>";
+		html += "<input type='submit' class='button' id='post_btn' value='Poster'></div></div>";
+		html += "<div id='messages' class='rounded_div'></div><div id='suggestions' class='rounded_div'>";
+		html += "<div>Suggestions</div></div></div>";
+	}
+	$('body').html(html);
+
+}
+
+function makeConnexionPanel(){
+	var html = "<div id='co_central'><form id='login_form' class='rounded' method='get' action='javascript:(function(){return;})()' onSubmit='connexion(this)'><div id='co_upper_div'>";
+	html += "<div id='co_text_div'>"
+	html += "<div class='co_span_text'>Login</div>";
+	html += "<div class='co_span_text'>Mot de passe</div></div>";
+	html += "<div id='co_input_div'>"
+	html += "<div><input class='co_text_input' type='text' name='login'></div>";
+	html += "<div><input class='co_text_input' type='password' name='psw'></div></div></div>";
+	html +=	"<div id='co_lower_div'><span><input class='button' type='submit' value='Connexion' ></span>";
+	html += "<span class='co_span_link'><input id='insc_btn' onclick='makeRegisterPanel()' type='submit' value='Pas encore inscrit?'/></span>";
+	// html += "<div id='login'><input id='login_btn' onclick='makeConnexionPanel()' type='submit' value='connexion'/></div></div></div>"
+	html += "</div></form></div>";
+
+	$('body').html(html);
+}
+
+function makeRegisterPanel(){
+	html = "<h1 id='insc_h1'> Inscription </h1><div id='insc_central'>"
+	html += "<form class='insc_rounded' method='get'>"
+	html += "<div id='insc_input_div'>"
+	html += "<div class='span_text'><input class='insc_text_input' type='text' name='Prenom' placeholder='Prénom'></div>"
+	html += "<div class='span_text'><input class='insc_text_input' type='text' name='Nom' placeholder='Nom'></div>"
+	html += "<div class='span_text'><input class='insc_text_input' type='text' name='Login' placeholder='Login'></div>"
+	html += "<div class='span_text'><input class='insc_text_input' type='text' name='Email' placeholder='Email'></div>"
+	html += "<div class='span_text'><input class='insc_text_input' type='password' name='Mot de Passe' placeholder='Mot de Passe'></div>"
+	html += "<div class='span_text'><input class='insc_text_input' type='password' name='Retapez Mot de Passe' placeholder='Retapez votre Mot de Passe'></div>"
+	html += "</div></form></div></br></br>"
+	html += "<div id = 'insc_lower_div'><div id='insc_btn_div'>"
+	html += "<input id='insc_register_btn' class = 'button' type='submit' value='Enregitrer' >"
+	html += "<input id='insc_cancel_btn' class = 'button' type='submit' value='Annuler' ></div>"
+	html += "<div id='insc_link_div'><input id='insc_btn' onclick='makeConnexionPanel()' type='submit' value='Vous avez déjà un compte?'/></div></div>"
+
+	$('body').html(html);
+}
+//charge dynamiquement une autre page html
+function pageUser(id, login){
+	makeMainPanel(id, login, env.query);
+}
+
+//permet de parser un JSON text en objet javascript: JSON.parse(json_text, revival)
+function revival(key, value){
+	//selon la valeur de key c'est un message, un commentaire ou autre chose
+	if(key == "commentaire"){
+		//verif les champs de value ne sont pas null
+		if(value.id != undefined && value.auteur != undefined && value.texte != undefined && value.date != undefined){
+			return new Comments(value.id, value.auteur, value.texte, value.date);
+		}
+	}
+	else if(key == "message"){
+		if(value.id != undefined && value.auteur != undefined && value.texte != undefined && value.date != undefined){
+			return new Message(value.id, value.auteur, value.texte, value.date, value.comments);
+		}
+	}
+	else if(key == "date"){
+		if(value.jour != undefined, value.mois != undefined, value.annee != undefined, value.heure != undefined, value.minutes != undefined){
+			//TODO verifier validite
+			return new Date(''+value.annee+'-'+value.mois+'-0'+value.jour+'-'+value.heure+'-'+value.minutes);
+		}
+	}
+	//dans le cas d'une erreur
+	return value;
+}
+
+
+

@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<!-- <html>
+	<meta charset="utf-8">
+	<!-- <meta http-equiv="Access-Control-Allow-Origin" content="*"> -->
+	<!-- <head>
+		
+		<link type="text/css" rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+		<!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script> -->
+		<link rel="stylesheet" type="text/css" href="../css/main.css">
+		<script type="text/javascript" src="../js/jquery.js"></script>
+		<script type="text/javascript" src="../js/tools.js"></script>
+		<script type="text/javascript" src="../js/posts.js"></script>
+		<script type="text/javascript" src="../js/models.js"></script>
+		<script type="text/javascript" src="../js/connexion.js"></script>
+		<title>Twitter</title>
+	</head> -->
+	<body > -->
+		<div class="navbar">
+            <a id="home_m_btn" value="mmm" href="#">Home</a>
+            <a id="login_m_btn" href="#">Login</a>
+            <a id="profil_m_btn" href="#">Profile</a>
+            <input id="m_search_bar" placeholder="Rechercher..."/>
+          </div>
+          <script type="text/javascript">
+              $("#login_m_btn").on("click", function(){
+                var val = $("#login_m_btn").html()
+                if (val == "Login")
+                    makeConnexionPanel();
+                else if(val == "Logout"){
+                    $("#login_m_btn").html("Login")
+                    makeMainPanel(-1, -1)
+                }
+                })
+            //   $("#home_m_btn").on("click", function(){console.log($("#home_m_btn").html())})
+          </script>
+	<!-- </body>
+</html> -->

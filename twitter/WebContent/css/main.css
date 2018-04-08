@@ -418,3 +418,12 @@ body{
 	-moz-border-radius: 5px;
 	border-radius: 5px;
   }
+
+
+/* affiachage des messages d'erreur */
+#message_erreur_div{
+	margin-top: 10px;
+	margin-bottom: 10px;
+	display: inline-block;
+	color: red;
+}
