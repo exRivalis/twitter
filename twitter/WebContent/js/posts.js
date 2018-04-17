@@ -1,27 +1,43 @@
 //recup les messages du serveur ou de la bd local en cas de noConnection
+
 function completeMessages(){
-	var messages = []
-	if(env.noConnection){
-		//bd locale
-		messages = getFromLocalDb(-1, -1, -1, -1);
-
-
-	}
-	else{
-		// serveur
-		// TODO
-	}
-
-	messagesHtml = ""
-	for(var i=0; i<messages.length; i++){
-		messagesHtml += messages[i].getHtml();
-	}
-	$('#messages_container').html(messagesHtml);
+	$.ajax({
+		type: "GET",
+		url: "message/listall",
+		data: "",
+		datatype: "JSON",
+		success: function(resp){completeMessagesResponse(resp)},
+		error: function(jqXHR, textStatus, errorThrown){alert("error servlet");},
+	})
 }
 
 //gestion de la réponse du serveur quand elle arrive
-function completeMessagesResponse(){
+function completeMessagesResponse(resp){
 	// TODO maj env.minId/ maxId/ msgs
+	//Message(id,auteur, texte, date, comments)
+
+	var messagesHtml = ""
+	var res = JSON.parse(resp, revival);
+	if(res.status == "OK"){
+		messages = res.messages
+		
+		for(var key in messages){
+			var msgMeta = messages[key]			
+			var msg = new Message(msgMeta._id, msgMeta.user_id, msgMeta.text, msgMeta.date, [])
+			env.msgs.push(msg)			
+			messagesHtml += msg.getHtml()
+
+			//update idMin et idMax
+			if(env.idMin > msgMeta._id)
+				env.idMin = msgMeta._id
+			if(env.idMax < msgMeta._id)
+				env.idMax = msgMeta._id
+	  	}
+	   $('#messages_container').html(messagesHtml);
+	}
+	else{
+		alert(res.error)
+	}
 }
 
 //retourne une liste de messages a partir de la nd locale triée par ordre décroissant de l'id
@@ -96,4 +112,33 @@ function erreur(message){
         $("#erreur").replaceWith(msg);
     }    
     $("#erreur").css({"color":"red"}); 
+}
+
+
+//poster un message -> creer un nouveau message
+function posterMessage(text){
+	if(text.length == 0){
+		alert("Rien à poster")
+	}	
+	else{
+		$.ajax({
+			type: "GET",
+			url: "message/create",
+			data: "key="+env.key+"&text="+text,
+			datatype: "JSON",
+			success: function(resp){responseMessage(resp)},
+			error: function(jqXHR, textStatus, errorThrown){alert("error servlet");},
+		})
+	}
+}
+
+function responseMessage(resp){
+	var res = JSON.parse(resp, revival);
+	if(res.status == "OK"){
+		alert("Message posté")
+		$("#new_message_input").val("")
+	}
+	else{
+		alert(res.error)
+	}
 }

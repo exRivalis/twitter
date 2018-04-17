@@ -10,21 +10,27 @@ function Message(id,auteur, texte, date, comments){
 }
 //renvoie le messaage sous format html interpretable durectement par le navigateur
 Message.prototype.getHtml = function(){
-	//var html = "<div class='texte_message'>" + this.texte + "</div>";
-	//ecriture contenu du message et infos
-	html += "<div class='info_message'> <span class='auteur_message'> Posté par " + this.auteur.login + "</span><span class='date_message'> le " + this.date + "</span> </div>";
+	var html="<div class='message'>"
+	html += "	<div class='corps_message'>"
+	html += "   	<div class='text_message'>"+this.texte+"</div>"	
+	html += "		<div class='info_message'>" 
+	html += "			<span class='auteur_message'>par " + this.auteur + "</span>"
+	html += "			<span class='date_message'> le " + this.date + "</span>"
+	html += "		</div>"
+	html += "	</div>"
+	html += "	<div class='commentaire'></div>"
+	html += "</div>"
+	// var html = "<div class='message' id='message_"+this.id+"'><div class='texte_message'>" + this.texte + "</div>";
+	// html += "<span id='show_comments'><input onclick='developpeMessage("+this.id+")' type='image' src='../ressources/show.png'/></span>";
+	// html += "<div class='info_message'><span class='auteur_message'>Posté par "+ this.auteur.login +"</span>";
+	// html += "<span class='date_message'> le " + this.date.getDate()+"/"+this.date.getMonth()+ "/"+this.date.getYear()+"</span></div>"
+	// // "/"+" à "+ this.date.getHours() +":"+this.date.getMinutes() +
+	// html += "<div class='comments_message'>";
 
-	var html = "<div class='message' id='message_"+this.id+"'><div class='texte_message'>" + this.texte + "</div>";
-	html += "<span id='show_comments'><input onclick='developpeMessage("+this.id+")' type='image' src='../ressources/show.png'/></span>";
-	html += "<div class='info_message'><span class='auteur_message'>Posté par "+ this.auteur.login +"</span>";
-	html += "<span class='date_message'> le " + this.date.getDate()+"/"+this.date.getMonth()+ "/"+this.date.getYear()+"</span></div>"
-	// "/"+" à "+ this.date.getHours() +":"+this.date.getMinutes() +
-	html += "<div class='comments_message'>";
+	// //ecriture des commentaires
+	// //TODO
 
-	//ecriture des commentaires
-	//TODO
-
-	html += "</div><hr class='line'></div>";
+	// html += "</div><hr class='line'></div>";
 
 	return html;
 }
@@ -40,10 +46,12 @@ function Comment(id, auteur, texte, date){
 }
 //renvoie le commentaire sous format html interpretable durectement par le navigateur
 Comment.prototype.getHtml = function(){
-	var html = "<div class='texte_comment'>" + this.texte + "</div>";
+	var html ="<div class='commentaire'>"
+	html += "<div class='texte_comment'>" + this.texte + "</div>";
 	//ecriture contenu du commentaire, auteur, date
-	html += "<div class='info_comment'> <span class='auteur_comment'> Posté par " +
-	this.auteur.login + "</span><span class='date_comment'> le " + this.date + "</span> </div>";
+	html += "<div class='info_message'><span class='auteur_message'> par " +
+	this.auteur.login + "</span><span class='date_message'> le " + this.date + "</span> </div>";
+	html +="</div>"
 	return html;
 }
 
@@ -52,9 +60,12 @@ function init(){
 	noConnection = false;
 	env = new Object();
 	env.noConnection = false;
-	env.fromId = -1;
 	env.id = -1;
-	env.msg = [];
+	env.login = -1;
+	env.msgs = [];
+	env.idMin = -1;
+	env.idMax = -1;
+	env.nbMax = -1;
 	setVirtualMessages();
 }
 

@@ -14,21 +14,30 @@
 		<script type="text/javascript" src="./js/connexion.js"></script>
 		<title>Twitter</title>
 	</head>
-	<body >
-		<div id="test">
-		</div>
+	<script type="text/javascript">
+		// var env;
+	</script>
+
+	<body onunload="createCookie('env', env, 30)">
 		<script type="text/javascript">
-			var env;
-			
-			// console.log(env.noConnection);
 			var localdb = []
 			var follows = []
-			$(init());
-			$(makeMainPanel(-1, "Wayne"));
-			//$(completeMessages());
-			//$(makeConnexionPanel)
-			 
-			 
+			// $(makeRegisterPanel())
+			//recup env dans les cookies
+			
+			var env = readCookie("env");
+			// $(init());
+			if(env == null){
+				//cookie n'existe pas
+				$(init());
+				$(makeMainPanel(-1, -1));
+			}
+			else{
+				//le cookie existe -> il faut l'utiliser
+				console.log(env);				
+				$(makeMainPanel(env.id, env.login))
+			}
 		</script>
+	
 	</body>
 </html>

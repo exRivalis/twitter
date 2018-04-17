@@ -3,31 +3,63 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 	<head>
 		<link type="text/css" rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
-		<!-- <link rel="stylesheet" type="text/css" href="../css/main.css"> -->
+		<link rel="stylesheet" type="text/css" href="../css/main.css">
 		<script type="text/javascript" src="../js/jquery.js"></script>
 		<script type="text/javascript" src="../js/tools.js"></script>
 		<title>Twitter</title>
-		<style>
+		<!-- <style>
 			body{
-				background-color: #20243F;
-				color: white;
+				background-color: #FFFFFF;
+				color: black;
 			}
-			#messages{
+			#messages{ 
 				margin-top: 20px;
 				width: 50%;
 				height: auto;
 			}
+			.message_corps{
+				width: 80%;
+				height: auto;
+				border-radius: 5px;
+				background-color: #EEEEEE;
+				margin-top: 20px;
+				padding: 20px;
+			}
+			.message_corps:hover{
+				background-color: #E2E2E2;
+			}
+
+			.com{
+				width: 76%;
+				height: auto;
+				border-radius: 5px;
+				background-color: #EEEEEE;
+				margin-top: 5px;
+				margin-left: 3%;
+				padding: 20px;
+			}
+			.com:hover{
+				background-color: #E2E2E2;
+			}
+			
+			.separator{
+				height: 18px;
+				width: 80%;
+				border-radius: 5px;
+				margin-top: 4px;
+				margin-bottom: 4px;
+				background-color: #EEEEEE;
+			}
 			#messages_container{
 				margin-top: 10px;
 			}
-			.message{
 
-			}
+			
 			.info_message{
 				display: inline;
 				float: right;
 				margin-right: 15%;
-				margin-top: 10px;
+				/* margin-bottom: 10px; */
 				color: #11A8AB;
 				/*margin-bottom: 5px;*/
 			}
@@ -44,35 +76,75 @@
 				margin-top: 10px;
 			}*/
 
-		</style>
+		</style> -->
 	</head>
 	<body >
+		<!-- saisi d'un message -->
+		<!-- <div id='messages'>
+			<div style='display: inline-flex; width:20%'>stat</div>
+			<div style='display: inline-flex; width:79%'>
+				<textarea id='new_message_input' type='text' placeholder='Ecrivez un nouveau message...'></textarea>
+				<input id='new_message_btn' type='submit' value='Poster'>
+			</div>
+		</div> -->
+		<!-- <script type="text/javascript">
+			var env = new Object({"id": -1})
+			// env.id = -1;
+			createCookie("env", JSON.stringify(env), 10);
+			var cookie = readCookie("env");
+			console.log(JSON.parse(cookie).id);
+				
+		</script> -->
 		<div id='messages'>
 			<div>Messages</div>
 			<div id='messages_container'>
 				<div class='message'>
-					<div class='texte_message'>
-						Le phare de la Vieille est un phare maritime du Finistère (France) construit
-						de 1882 à 1887 sur le rocher de Gorlebella (« la roche la plus éloignée » en breton).
+					<div class="corps_message">
+						<div class='texte_message'>
+							Le phare de la Vieille est un phare maritime du Finistère (France) construit
+							de 1882 à 1887 sur le rocher de Gorlebella (« la roche la plus éloignée » en breton).
+						</div>
+						<div class='info_message'>
+							<span class='auteur_message'>Posté par Moijjjjjjjjj</span>
+							<span class='date_message'> le 72/58/8795</span>
+						</div>
 					</div>
-					<div class='info_message'>
-						<span class='auteur_message'>Posté par Moijjjjjjjjj</span>
-						<span class='date_message'> le 72/58/8795</span>
+					
+					<div class="commentaire">
+						<div class='text_com'>commmentaire utile!</div>
+						<div class='info_message'>
+							<span class='auteur_message'>par Moijjjj</span>
+							<span class='date_message'> le 72/88/8795</span>
+						</div>
 					</div>
-					<hr class='line'>
-				</div>
+					<div class="com">
+							Et en voila un autre!
+					</div>
+					<div class="com">
+						Et un autre!, je suis chaud ma parole...
+					</div>
+					<!-- <div class="separator"></div> -->
+				 </div>
+				
 				<div class='message'>
-					<div class='texte_message'>
-						Le phare de la Vieille est un phare maritime du Finistère (France) construit
-						de 1882 à 1887 sur le rocher de Gorlebella (« la roche la plus éloignée » en breton).
+						<div class="message_corps">
+							<div class='texte_message'>
+								Le phare de la Vieille est un phare maritime du Finistère (France) construit
+								de 1882 à 1887 sur le rocher de Gorlebella (« la roche la plus éloignée » en breton).
+							</div>
+							<div class='info_message'>
+								<span class='auteur_message'>Posté par Moijjjjjjjjj</span>
+								<span class='date_message'> le 72/58/8795</span>
+							</div>
+						</div>
+						
+						<div class="com">
+							commmentaire utile!
+						</div>
+						<!-- <div class="separator"></div> -->
 					</div>
-					<div class='info_message'>
-						<span class='auteur_message'>Posté par Moi</span>
-						<span class='date_message'> le 72/58/8795</span>
-					</div>
-					<hr class='line'>
-				</div>
+
 			</div>
-		</div>
+		</div>  
 	</body>
 </html>

@@ -2,108 +2,120 @@
 //fabtication d'une page html contenant selon le cas une page profile d'aun autre, mon profile ou une page d'accueil
 //en fonction de env.fromId on adapte le contenu html et les fichier css importes
 function makeMainPanel(fromId, fromLogin){
-	//var html = $("body").load("./html/fixedmenu.html")
-	var html = "<header class='rounded_div' id='top'> <div id='logo'><img src='../ressources/logo_twitterium.png' width=70px/> </div>";
-	html += "<div id='z_recherche'><form ><label for='search_bar' >Recherche</label><br>";
-	html+="<input class='text_input' type='text' id='search_bar'/><input type='checkbox' id='in_friends'/>";
-	html+="<input type='submit' class='button' id='search_btn' value='Recherche'></form></div>";
-	html+="<div id='log'>";
-	if(fromId == env.id && env.id != -1){
+	var html = "<div class='navbar'><a id='home_m_btn' value='home' href='#' onclick='goHome()'>Home</a>"
+	
+	if(env.id != -1){
 		//je suis connecte: afficher deconnexion
-		//my profile
-		html += "<div id='title'> Mon profile </div>";
-		html += "<div id='login'><a onclick='makeConnexionPanel()'>Connexion</a></div></div></div>"
-	}
-	else if(fromId > 0 && fromId != env.id){
-		//je suis connecte: afficher deconnexion
-		html += "<div id='title'> Profile de jkjkh	<div id='follow'><img src='../ressources/plus.png'></div></div>"
-		html += "<div id='login'><a onclick='makeConnexionPanel()'>Connexion</a></div></div></div>"
-	}
-	else{
-		//je ne suis pas connecte
-		html += "<div id='login'><input id='login_btn' onclick='makeConnexionPanel()' type='submit' value='connexion'/></div></div></div></header>"
+		html += "<a id='profil_m_btn' href='#' onclick='goProfile()'>Profile</a>"
+		html += "<a id='login_m_btn' href='#' onclick='login()'>Logout</a>"
+	}else{
+		html += "<a id='login_m_btn' href='#' onclick='login()'>Login</a>"
 	}
 
+	html += "<input id='m_search_bar' placeholder='Rechercher...'/></div>"
 	//fin du header
 	//place au corps de la page
-
+	html += makeConnexionModal();
+	html += "<div id='corps_page'>";
 	if(fromId < 0){
 		//Home
-		// html+="<div id='title'>Home</div>";
-		html += "<div id='corps_page'>";
 		html +=	"<!-- zone de statistiques -->";
 		html +=	"<div id='stats' class='rounded_div'>";
-		html += "<div>stats</div></div>";
-		html += "<!-- nouveau message & liste messages -->";
-		html +=	"<div id='corps_messages'>";
-		html += "<div id='new_message' class='rounded_div'>";
-		html += "<div>Nouveau message</div>";
-		html += "<input class='text_input' type='text' id='new_message_input'>";
-		html += "<div id=new_message_btn>";
-		html += "<input onclick='' type='submit' class='button' id='post_btn' value='Poster'>";
-		html += "</div></div>";
-		html += "<div id='messages' class='rounded_div'>";
-		html += "<div>messages</div>"
-		html += "<div id='messages_container'></div>"
-		html += "</div></div>";
-		html += "</div>";
-
+		html += "<div>stats</div>"
+		html += "</div>";//fin div stats
+		if(env.id!= -1){
+			html += "<div id='messages'>";
+			html += "	<div id='new_message'>"
+			html += "   	<textarea id='new_message_input' type='text' placeholder='Ecrivez un nouveau message...'></textarea>"
+			html += "		<input id='new_message_btn' type='submit' value='Poster' onclick='posterMessage($(\"#new_message_input\").val())'>"
+			html += "	</div>"
+			html += "	<div id='messages_container'>container</div>"
+			html += "</div>"
+		}
 	}
-	else if(fromId == env.id){
+	else if(fromId == env.id && env.id != -1){
 		//mon profile
-		//TODO
+		// html += "<div>Mon profile</div>"
+		html += "<div id='messages'>";
+			html += "	<div id='new_message'>"
+			html += "   	<textarea id='new_message_input' type='text' placeholder='Ecrivez un nouveau message...'></textarea>"
+			html += "		<input id='new_message_btn' type='submit' value='Poster' onclick='posterMessage($(\"#new_message_input\").val())'>"
+			html += "	</div>"
+			html += "	<div id='messages_container'>container</div>"
+			html += "</div>"
 
 	}
-	else{
-		//profile de quelqu'un d'autre
+	else if(fromId != env.id){
+		//autre profile
 		//TODO
-		html += "	<div class='banniere'><img src='../ressources/banniere_twitterium.jpg' name='banniere' class='banniere'>";
-		html += "</div><div class='middle'>";
-		html += "<img src='../ressources/photo_de_profil.jpg' name='photo_de_profil' class='photo_de_profil' width='150' height='150'></div>";
-		html += "<div id='corps_page'><!-- zone de statistiques --><div id='friends' class='rounded_div'>";
-		html += "<div>Amis</div></div><!-- nouveau message & liste messages --><div id='corps_messages'>";
-		html +=	"<div id='new_message' class='rounded_div'><div>Nouveau message</div>";
-		html += "<input class='text_input' type='text' id='new_message_input'><div id=new_message_btn>";
-		html += "<input type='submit' class='button' id='post_btn' value='Poster'></div></div>";
-		html += "<div id='messages' class='rounded_div'></div><div id='suggestions' class='rounded_div'>";
-		html += "<div>Suggestions</div></div></div>";
+		html += "<div>Autre profile</div>"
 	}
+	html += "</div>";//fin div corps_page
+
+	//recup tous messages
+	$(completeMessages())
 	$('body').html(html);
 
 }
 
+function makeConnexionModal(){
+	var html ="<div id='login_modal' class='modal'>"
+		html +="	<div class='modal_content'>"
+		html +="		<span class='close_btn' onclick='closeLoginModal()'>&times;</span>"
+		html +="		<form id='login_form' method='get' action='javascript:(function(){return;})()' onSubmit='javascript:connexion(this)'>"					
+		html +="			<input id='login_input' class='modal_input' type='text' placeholder='Login' name='login'>"
+		html +="			<input id='psw_input' class='modal_input' type='password' placeholder='Mot de passe' name='psw'>"
+
+		html +="			<input id='login_btn' class='modal_btn' type='submit' value='Se connecter'>"
+		html +="			<a id='modal_link' class='link' href='#' onclick='makeRegisterPanel()'>Pas encore inscrit?</a>"
+		html +="		</form>"
+		html +="	</div>"
+		html +="</div>"
+		return html
+}
+
+//ferme le modal de connexion
+function closeLoginModal(){
+	login_modal.style.display = 'none';
+}
 function makeConnexionPanel(){
-	var html = "<div id='co_central'><form id='login_form' class='rounded' method='get' action='javascript:(function(){return;})()' onSubmit='javascript:connexion(this)'><div id='co_upper_div'>";
-	html += "<div id='co_text_div'>"
-	html += "<div class='co_span_text'>Login</div>";
-	html += "<div class='co_span_text'>Mot de passe</div></div>";
-	html += "<div id='co_input_div'>"
-	html += "<div><input class='co_text_input' type='text' name='login'></div>";
-	html += "<div><input class='co_text_input' type='password' name='psw'></div></div></div>";
-	html +=	"<div id='co_lower_div'><span><input class='button' type='submit' value='Connexion' ></span>";
-	html += "<span class='co_span_link'><input id='insc_btn' onclick='makeRegisterPanel()' type='submit' value='Pas encore inscrit?'/></span>";
-	// html += "<div id='login'><input id='login_btn' onclick='makeConnexionPanel()' type='submit' value='connexion'/></div></div></div>"
-	html += "</div></form></div>";
-
+	var html = ""
+	html += "<form id='login_form' class='insc_form' method='GET' action='javascript:(function(){return;})()' onSubmit='javascript:connexion(this)'>"
+	html += "	<div id='modal_top'>"
+	html += "		<span id='modal_co_btn' class='modal_span'><a class='modal_top_btn' style='color:#0F9295'>Connexion</a></span>"
+	html += "		<span id='modal_reg_btn' class='modal_span' onclick='javascript:makeRegisterPanel()'><a class='modal_top_btn'>Inscription</a></span>"
+	html += "	</div>"
+	html += "<hr/>"
+	html += "	<input id='login_input' class='modal_input' type='text' name='login' placeholder='Login'>"
+	html += "	<input id='psw_input' class='modal_input' type='password' name='psw' placeholder='Mot de Passe'>"
+	html += "   <div id='modal_btn_div'>"
+	html += "		<input id='co_btn' class = 'insc_button' type='submit' value='Se connecter' >"
+	html += "		<a id='insc_co' onclick='makeConnexionPanel()' type='submit' value='Vous avez déjà un compte?'</a>"
+	html += "   </div>"
+	html += "</form>"
+	
 	$('body').html(html);
 }
-
 function makeRegisterPanel(){
-	html = "<h1 id='insc_h1'> Inscription </h1><div id='insc_central'>"
-	html += "<form class='insc_rounded' method='get'>"
-	html += "<div id='insc_input_div'>"
-	html += "<div class='span_text'><input class='insc_text_input' type='text' name='Prenom' placeholder='Prénom'></div>"
-	html += "<div class='span_text'><input class='insc_text_input' type='text' name='Nom' placeholder='Nom'></div>"
-	html += "<div class='span_text'><input class='insc_text_input' type='text' name='Login' placeholder='Login'></div>"
-	html += "<div class='span_text'><input class='insc_text_input' type='text' name='Email' placeholder='Email'></div>"
-	html += "<div class='span_text'><input class='insc_text_input' type='password' name='Mot de Passe' placeholder='Mot de Passe'></div>"
-	html += "<div class='span_text'><input class='insc_text_input' type='password' name='Retapez Mot de Passe' placeholder='Retapez votre Mot de Passe'></div>"
-	html += "</div></form></div></br></br>"
-	html += "<div id = 'insc_lower_div'><div id='insc_btn_div'>"
-	html += "<input id='insc_register_btn' class = 'button' type='submit' value='Enregitrer' >"
-	html += "<input id='insc_cancel_btn' class = 'button' type='submit' value='Annuler' ></div>"
-	html += "<div id='insc_link_div'><input id='insc_btn' onclick='makeConnexionPanel()' type='submit' value='Vous avez déjà un compte?'/></div></div>"
-
+	var html = ""
+	html += "<form class='insc_form' method='GET' action='javascript:(function(){return;})()' onSubmit='javascript:inscription(this)'>"
+	html += "	<div id='modal_top'>"
+	html += "		<span id='modal_co_btn' class='modal_span' onclick='javascript:makeConnexionPanel()'><a class='modal_top_btn'>Connexion</a></span>"
+	html += "		<span id='modal_reg_btn' class='modal_span'><a class='modal_top_btn' style='color:#0F9295'>Inscription</a></span>"
+	html += "	</div>"
+	html += "<hr/>"
+	html += "	<input class='modal_input' type='text' name='prenom' placeholder='Prénom'>"
+	html += "	<input class='modal_input' type='text' name='nom' placeholder='Nom'>"
+	html += "	<input class='modal_input' type='text' name='login' placeholder='Login'>"
+	// html += "	<input class='modal_input' type='text' name='email' placeholder='Email'>"
+	html += "	<input class='modal_input' type='password' name='mdp' placeholder='Mot de Passe'>"
+	html += "	<input class='modal_input' type='password' name='remdp' placeholder='Retapez votre Mot de Passe'>"
+	html += "   <div id='modal_btn_div'>"
+	html += "		<input id='register_btn' class = 'insc_button' type='submit' value='Valider' >"
+	html += "		<a id='insc_co' onclick='makeConnexionPanel()' type='submit' value='Vous avez déjà un compte?'</a>"
+	html += "   </div>"
+	html += "</form>"
+	
 	$('body').html(html);
 }
 //charge dynamiquement une autre page html
@@ -136,4 +148,56 @@ function revival(key, value){
 }
 
 
+//interaction with navbar login/logout button
+function login(){
+	var val = $('#login_m_btn').html()
+	if (val == 'Login') {
+		login_modal.style.display = "block";
+	}
+	else if(val == 'Logout'){	
+		//appel logout dans connexion.js
+		logout(env.key);
+	}
+}
 
+//home
+function goHome(){
+	makeMainPanel(-1, env.login);
+}
+
+//profile
+function goProfile(){
+	makeMainPanel(env.id, env.login);
+}
+
+
+//gestion cookies
+function createCookie(name, value, days){
+	if(days){
+		var date = new Date();
+		date.setTime(date.getTime() + (days*24*60*60*100));
+		var expires = "; expires=Date.toGMTString()";
+	}
+	else var expires = "";
+	document.cookie = name+"="+JSON.stringify(value)+expires+"; ";
+}
+
+function readCookie(name){
+	var nameEQ = name +"=";
+	var cookies = document.cookie.split(";");
+	var res = ""
+	for(var i =0; i<cookies.length; i++){
+		var c = cookies[i];
+		
+		while(c.charAt(0) == ' ') c = c.substring(1, c.length); //decalage d'une case dans le chaine de caractere
+		if( c.indexOf(nameEQ) == 0){
+			res = c.substring(nameEQ.length, c.length);
+			return JSON.parse(res); //verif si c est sous-chaine de nameEQ
+		} 
+	}
+	return null;//le cookie recherche n'existe pas
+}
+
+function eraseCookie(name){
+	createCookie(name, null, -1);
+}

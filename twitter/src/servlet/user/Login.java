@@ -18,7 +18,7 @@ public class Login extends HttpServlet {
 		String login = request.getParameter("login");
 		String mdp = request.getParameter("mdp");
 		JSONObject result = new JSONObject();
-		System.out.println("login servlet");
+		//System.out.println("login servlet");
 		if(mdp == null || login == null) {
 			result = ServicesTools.serviceRefused("Arguments invalides", -1);
 		}

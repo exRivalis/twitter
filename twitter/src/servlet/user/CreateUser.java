@@ -16,6 +16,7 @@ import org.json.JSONObject;
 public class CreateUser extends HttpServlet{
 	public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		//recup parametre
+		//System.out.println("okkkkk");
 		String login = request.getParameter("login");
 		String mdp = request.getParameter("mdp");
 		String nom = request.getParameter("nom");

@@ -133,9 +133,11 @@ public class UserTools {
 		
 		//generate new connection key
 		String key = insertConnection(login, co);
+		int id = getUserId(login, co);
 		JSONObject res = ServicesTools.serviceAccepted("succesfully loged in");
 		try {
 			res.put("key", key);
+			res.put("id",  id);
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -148,9 +150,11 @@ public class UserTools {
 	public static String insertConnection(String login, Connection co) throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException {
 		String userId = "\""+getUserId(login, co)+"\"";
 		String key = generateKey();
+		System.out.println(userId);
 		//ajout connection a la table session
 		//SQL TRUE : 1, FALSE : 0
 		String query = "INSERT INTO session VALUES('"+key+"', "+userId+ ", \"1\");";
+		//System.out.println(query);
 		Statement st = co.createStatement();
 		st.executeUpdate(query);
 				
