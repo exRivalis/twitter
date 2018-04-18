@@ -47,6 +47,10 @@
 		<servlet-name>listMessagesFriends</servlet-name> 
 		<servlet-class>servlet.message.ListMessagesFriends</servlet-class> 
 	</servlet>
+	<servlet>
+		<servlet-name>addCom</servlet-name>
+		<servlet-class>servlet.message.AddCom</servlet-class> 
+	</servlet>
 	
 	
 	
@@ -94,6 +98,10 @@
 	<servlet-mapping> 
 		<servlet-name>listMessagesFriends</servlet-name> 
 		<url-pattern>/message/listmfriends</url-pattern> 
+	</servlet-mapping>
+	<servlet-mapping> 
+		<servlet-name>addCom</servlet-name> 
+		<url-pattern>/message/addcom</url-pattern> 
 	</servlet-mapping>
 	
 
