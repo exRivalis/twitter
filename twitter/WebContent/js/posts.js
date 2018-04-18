@@ -27,7 +27,7 @@ function completeMessagesResponse(resp){
 			var coms = []			
 			for(var c in msgMeta.commentaires){
 				var com = msgMeta.commentaires[c]
-				coms.push(new Comment(com.user_id, com.user_id, com.text, com.date))				
+				coms.push(new Comment(com.id, com.user_id, com.text, com.date))				
 			}
 			console.log(msgMeta);
 			

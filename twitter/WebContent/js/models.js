@@ -1,5 +1,5 @@
 //un message
-function Message(id,auteur, texte, date, comments){
+function Message(id, auteur, texte, date, comments){
 	this.id = id;
 	this.auteur = auteur;
 	this.texte = texte;
