@@ -299,7 +299,27 @@ body{
 	margin-bottom: 10px;
 	color: #11A8AB;
 }
-
+#delete_m{
+	/* position: fixed;*/
+	color: #aaa	;
+	float: right;
+	margin-right: 5px;
+}
+#delete_m:hover, #delete_m:focus{
+	color: orangered;
+	cursor: pointer;
+}
+#delete_c{
+	/* position: fixed;*/
+	color: #aaa	;
+	float: right;
+	margin-top: -15px;
+	margin-right: -15px;
+}
+#delete_c:hover, #delete_c:focus{
+	color: orangered;
+	cursor: pointer;
+}
 /* commentaires */
 .commentaire{
 	width: 97%;

@@ -24,14 +24,15 @@ function completeMessagesResponse(resp){
 		for(var key in messages){
 			var msgMeta = messages[key]
 			//recup des commentaire
-			var coms = []			
+			var coms = []
 			for(var c in msgMeta.commentaires){
 				var com = msgMeta.commentaires[c]
-				coms.push(new Comment(com.id, com.user_id, com.text, com.date))				
+				coms.push(new Comment(com.id, msgMeta.id, com.user_id, com.text, com.date))				
 			}
-			console.log(msgMeta);
 			
 			var msg = new Message(msgMeta.id, msgMeta.user_id, msgMeta.text, msgMeta.date, coms)
+			console.log(msg);
+			
 			env.msgs[msg.id]=(msg)			
 			messagesHtml += msg.getHtml()
 
@@ -188,6 +189,53 @@ function responseCommentaire(resp){
 	if(res.status == "OK"){
 		alert("Commentaire posté")
 		$("#new_com_input").val("")
+	}
+	else{
+		alert(res.error)
+	}
+}
+
+
+function deleteMessage(id){
+	console.log("delete message");
+	
+	$.ajax({
+		type: "GET",
+		url: "message/deletem",
+		data: "key="+env.key+"&id="+id,
+		datatype: "JSON",
+		success: function(resp){responseDelMessage(resp, id)},
+		error: function(jqXHR, textStatus, errorThrown){alert(textStatus+" "+errorThrown);},
+	})	
+}
+
+function responseDelMessage(resp, id){
+	var res = JSON.parse(resp, revival);
+	if(res.status == "OK"){
+		env.msgs[id] = null;
+		alert("Message supprimé")
+	}
+	else{
+		alert(res.error)
+	}
+}
+
+function deleteComment(idM, idC){
+	$.ajax({
+		type: "GET",
+		url: "message/deletec",
+		data: "key="+env.key+"&idM="+idM+"&idC="+idC,
+		datatype: "JSON",
+		success: function(resp){responseDelComment(resp, idM, idC)},
+		error: function(jqXHR, textStatus, errorThrown){alert(textStatus+" "+errorThrown);},
+	})	
+}
+
+function responseDelComment(resp, idM, idC){
+	var res = JSON.parse(resp, revival);
+	if(res.status == "OK"){
+		env.msgs[idM].comments[idC] = null;
+		alert("Commentaire supprimé")
 	}
 	else{
 		alert(res.error)

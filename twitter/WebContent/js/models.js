@@ -12,6 +12,7 @@ function Message(id, auteur, texte, date, comments){
 //renvoie le messaage sous format html interpretable durectement par le navigateur
 Message.prototype.getHtml = function(){
 	var html="<div class='message'  id='message_"+this.id+"'>"
+	html += "	<span id='delete_m' onclick='deleteMessage("+this.id+")'>&times;</span>"
 	html += "	<div class='corps_message'>"
 	html += "   	<div class='text_message'>"+this.texte+"</div>"	
 	html += "		<div class='info_message'>" 
@@ -42,8 +43,9 @@ Message.prototype.getHtml = function(){
 
 
 //commentaire
-function Comment(id, auteur, texte, date){
+function Comment(id, idm, auteur, texte, date){
 	this.id = id;
+	this.idm = idm;
 	this.auteur = auteur;
 	this.texte = texte;
 	this.date = date;
@@ -51,6 +53,7 @@ function Comment(id, auteur, texte, date){
 //renvoie le commentaire sous format html interpretable durectement par le navigateur
 Comment.prototype.getHtml = function(){
 	var html ="<div class='commentaire'>"
+	html += "	<span id='delete_c' onclick='deleteComment("+this.idm+","+this.id+")'>&times;</span>"
 	html += "<div class='texte_comment'>" + this.texte + "</div>";
 	//ecriture contenu du commentaire, auteur, date
 	html += "<div class='info_message'><span class='auteur_message'> par " +
