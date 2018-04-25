@@ -22,7 +22,9 @@ Message.prototype.getHtml = function(){
 	html += "	</div>"	
 	html += "	<div class='commentaires'></div>"
 	html += "	<div class='show_hide'>"
-	html += "	   <div class='show_comments' onclick='javascript:developpeMessage("+ JSON.stringify(this.id) +")'/>"
+	html += "	   <div class='show_comments' onclick='javascript:developpeMessage("+ JSON.stringify(this.id) +")'>"
+	html += "			<i class='fa fa-sort-down' id='developpe_comments'></i>"
+	html += "		</div>"
 	html += "	</div>"
 	html += " </div>"
 	// var html = "<div class='message' id='message_"+this.id+"'><div class='texte_message'>" + this.texte + "</div>";
@@ -73,6 +75,8 @@ function init(){
 	env.idMin = -1;
 	env.idMax = -1;
 	env.nbMax = -1;
+	env.key = -1;
+	env.follows = []
 	// setVirtualMessages();
 }
 

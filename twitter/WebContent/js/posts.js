@@ -31,9 +31,8 @@ function completeMessagesResponse(resp){
 			}
 			
 			var msg = new Message(msgMeta.id, msgMeta.user_id, msgMeta.text, msgMeta.date, coms)
-			console.log(msg);
 			
-			env.msgs[msg.id]=(msg)			
+			env.msgs[msg.id]=msg			
 			messagesHtml += msg.getHtml()
 
 			//update idMin et idMax
@@ -114,18 +113,18 @@ function developpeMessage(m_id){
 		
 		//ajouter le tout dans la div#messages_id.commentaires
 		$("#message_"+m_id).find(".commentaires").html(coms);
+		//changer le sens de la flèche
+		$("#message_"+m_id).find(".show_comments").html("<i class='fa fa-sort-up' id='hide_comments'></i>")
 	}
 	else{
 		//couvrir le message
 		$("#message_"+m_id).find(".commentaires").html("")
+		//changer le sens de la flèche
+		$("#message_"+m_id).find(".show_comments").html("<i class='fa fa-sort-down' id='developpe_comments'></i>")
 	}
+
 }
 
-//cacher les commentaires d'un message
-function hideMessage(m_id){
-	var html = "<div class='show_comments' onclick='javascript:developpeMessage("+JSON.stringify(m_id) +")'/>"
-	$("#message_"+m_id).find(".commentaires").html(html);
-}
 
 function erreur(message){
     var msg = "<div id =\"message_erreur\">"+message+"></div>";
@@ -159,8 +158,10 @@ function posterMessage(text){
 function responseMessage(resp){
 	var res = JSON.parse(resp, revival);
 	if(res.status == "OK"){
-		alert("Message posté")
+		// alert("Message posté")
 		$("#new_message_input").val("")
+		//recharger la page
+		$(makeMainPanel(env.id, env.login));
 	}
 	else{
 		alert(res.error)
@@ -178,27 +179,60 @@ function posterCommentaire(m_id, text){
 			url: "message/addcom",
 			data: "key="+env.key+"&text="+text+"&msgId="+m_id,
 			datatype: "JSON",
-			success: function(resp){responseCommentaire(resp)},
+			success: function(resp){responseCommentaire(resp, m_id)},
 			error: function(jqXHR, textStatus, errorThrown){alert(errorThrown);},
 		})
 	}
 }
 
-function responseCommentaire(resp){
+function responseCommentaire(resp, m_id){
 	var res = JSON.parse(resp, revival);
 	if(res.status == "OK"){
-		alert("Commentaire posté")
+		// alert("Commentaire posté")
 		$("#new_com_input").val("")
+		//mettre a jour la section commenatire
+		$(reloadMessage(res, m_id, -1));
 	}
 	else{
 		alert(res.error)
 	}
 }
 
-
-function deleteMessage(id){
-	console.log("delete message");
+//rechargerla section commentaire
+function reloadMessage(res, m_id, c_id){
+	if(c_id == -1){
+		// ajouter le commentaire a env
+		var c = res.commentaire;
+		var com = new Comment(c.id, c.idm, c.user_id, c.text, c.date);
+		env.msgs[m_id].comments.push(com);
+	}else{
+		// le supprimer de env
+		var i = 0;
+		for(i in env.msgs[m_id].comments){
+			var tmp_c = env.msgs[m_id].comments[i]
+			if(tmp_c.id == c_id)
+				break;
+		}
+		env.msgs[m_id].comments = null;
+	}
 	
+	//rechargement des commentaires
+	var coms = []
+	for(var i in env.msgs[m_id].comments){
+		coms += env.msgs[m_id].comments[i].getHtml();
+	}
+	//ajout de la zone de saisi d'un nouveau commentaire
+	coms += "<div id='new_com'><textarea id ='new_com_input' type='text' placeholder='Ecrivez un commentaire...'></textarea>"
+	coms += "<input id='new_com_submit' type='submit' onclick='posterCommentaire("+JSON.stringify(m_id)+", $(\"#new_com_input\").val())' value='Poster'></div>";
+	
+	//ajouter le tout dans la div#messages_id.commentaires
+	$("#message_"+m_id).find(".commentaires").html(coms);
+	//changer le sens de la flèche
+	$("#message_"+m_id).find(".show_comments").html("<i class='fa fa-sort-up' id='hide_comments'></i>")
+	
+}
+
+function deleteMessage(id){	
 	$.ajax({
 		type: "GET",
 		url: "message/deletem",
@@ -213,7 +247,6 @@ function responseDelMessage(resp, id){
 	var res = JSON.parse(resp, revival);
 	if(res.status == "OK"){
 		env.msgs[id] = null;
-		alert("Message supprimé")
 	}
 	else{
 		alert(res.error)
@@ -235,7 +268,7 @@ function responseDelComment(resp, idM, idC){
 	var res = JSON.parse(resp, revival);
 	if(res.status == "OK"){
 		env.msgs[idM].comments[idC] = null;
-		alert("Commentaire supprimé")
+		reloadMessage(res, idM, idC)
 	}
 	else{
 		alert(res.error)

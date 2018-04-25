@@ -8,6 +8,13 @@ function makeMainPanel(fromId, fromLogin){
 		//je suis connecte: afficher deconnexion
 		html += "<a id='profil_m_btn' href='#' onclick='goProfile()'>Profile</a>"
 		html += "<a id='login_m_btn' href='#' onclick='login()'>Logout</a>"
+		//si page profile de quelqu'und'autre afficher follow
+		if(fromId == env.id){
+			html += "<a id='follow_m_btn' href='#' onclick='gestionFollow("+fromId+")'>Follow</a>"
+			// html += "<script type='text/javascript'> $('#follow_m_btn').click(function(){"+funcCall+";}) </script>"
+			
+		}
+		
 	}else{
 		html += "<a id='login_m_btn' href='#' onclick='login()'>Login</a>"
 	}
@@ -200,4 +207,85 @@ function readCookie(name){
 
 function eraseCookie(name){
 	createCookie(name, null, -1);
+}
+
+//follow a user from his profile
+function gestionFollow(id){
+	var content = $("#follow_m_btn").html()
+	if(conttent == "Follow"){
+		follow(id)
+	}else{
+		unfollow(id)
+	}
+	
+}
+function follow(id){	
+	$.ajax({
+		type: "GET",
+		url: "friends/add",
+		data: "key="+env.key+"&id_friend="+id,
+		datatype: "JSON",
+		success: function(resp){responseFollow(resp, id)},
+		error: function(jqXHR, textStatus, errorThrown){alert(textStatus+" "+errorThrown);},
+	})	
+}
+
+function responseFollow(resp, id){
+	var res = JSON.parse(resp, revival);
+	if(res.status == "OK"){
+		
+	}
+	else{
+		alert(res.error)
+	}
+}
+
+function unfollow(id){	
+	$.ajax({
+		type: "GET",
+		url: "friends/remove",
+		data: "key="+env.key+"&id_friend="+id,
+		datatype: "JSON",
+		success: function(resp){responseUnfollow(resp, id)},
+		error: function(jqXHR, textStatus, errorThrown){alert(textStatus+" "+errorThrown);},
+	})	
+}
+
+function responseUnfollow(resp, id){
+	var res = JSON.parse(resp, revival);
+	if(res.status == "OK"){
+		
+	}
+	else{
+		alert(res.error)
+	}
+}
+
+//recup mes follows/friends
+function getFriends(){
+	if(env.key != -1){
+		$.ajax({
+			type: "GET",
+			url: "friends/listfriends",
+			data: "key="+env.key,
+			datatype: "JSON",
+			success: function(resp){responseFriends(resp)},
+			error: function(jqXHR, textStatus, errorThrown){alert(textStatus+" "+errorThrown);},
+		})
+	}
+	else{
+		env.follows = []
+	}
+}
+
+function responseFriends(resp){
+	var res = JSON.parse(resp, revival)
+	if(res.status == "OK"){
+		for(friend in res.friends)
+			env.follows[friend]=(res.friends[friend]);
+		console.log(env.follows);
+		
+	}else{
+		alrts(res.error)
+	}
 }
