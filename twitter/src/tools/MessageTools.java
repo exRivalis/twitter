@@ -1,125 +1,26 @@
 package tools;
 
+import java.net.UnknownHostException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Iterator;
 
+import org.bson.types.ObjectId;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBCollection;
 import com.mongodb.DBCursor;
+import com.mongodb.DBObject;
+
+import bd.Database;
 
 public class MessageTools {
-	
-	//creer et ajouter un message a la mongoDB
-	public static JSONObject createMessage(String key, String text, DBCollection col, Connection co) throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException {
-		//creation du contenu du message
-		BasicDBObject message = new BasicDBObject();
-		//on recup user_id avec key
-		int user_id = UserTools.getIdWithKey(key, co);
-		//recup date actuelle
-		GregorianCalendar calendar = new GregorianCalendar();
-		Date ajd = calendar.getTime();
 		
-		//ajout elements
-		message.put("user_id", user_id);
-		message.put("text", text);
-		message.put("date", ajd);
-		
-		//ajout message a la mongoDB
-		col.insert(message);
-		
-		return ServicesTools.serviceAccepted("message ajoute");
-	}
-
-	//list my messages
-	public static JSONObject listMessages(String key, DBCollection col, Connection co) throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException {
-		JSONObject messages = new JSONObject();
-		JSONObject result = new JSONObject();
-		int cpt = 0;
-		// recuperer l'id via l'index
-		int id = UserTools.getIdWithKey(key, co);
-        if(id == -1) {
-        	return ServicesTools.serviceRefused("user inexistant", -1);
-        }
-        BasicDBObject query = new BasicDBObject();
-        query.put("user_id", id);
-        // recuperation des messages de l'id
-        DBCursor cursor = col.find(query);
-        while(cursor.hasNext()) {
-        	//affichage de chaque messages
-        	try {
-				messages.put(""+cpt++, cursor.next());
-			} catch (JSONException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-        }
-        
-        result = ServicesTools.serviceAccepted("liste des messages");
-        try {
-			result.put("messages", messages);
-		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-        return result;
-	}
-	
-	//list all messages
-	public static JSONObject listAllMessages(DBCollection col)  {
-		JSONObject messages = new JSONObject();
-		JSONObject result = new JSONObject();
-		int cpt = 0;
-		// recuperer l'id via l'index
-		
-        
-        // recuperation de tous les messages
-        DBCursor cursor = col.find();
-        while(cursor.hasNext()) {
-        	//affichage de chaque messages
-        	try {
-				messages.put(""+cpt++, cursor.next());
-			} catch (JSONException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-        }
-        
-        result = ServicesTools.serviceAccepted("liste des messages");
-        try {
-			result.put("messages", messages);
-		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-        return result;
-	}
-	
-	//list message des amis
-	//list all messages
-	public static JSONObject listMessagesFriends(String key, DBCollection col, Connection co) throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException, JSONException  {
-		JSONObject messages = new JSONObject();
-		JSONObject result = new JSONObject();
-		int cpt = 0;
-		// recuperer id friends
-		JSONObject friends = FriendTools.listFriends(key, co);
-		
-		//pour chaque amis recup les message et ajouter au jsonobject messages
-		Iterator<?> keys = friends.keys();
-		while(keys.hasNext()) {
-			int f_id = Integer.parseInt((String)keys.next());
-			messages.put(""+f_id, listMessagesId(f_id, col, co));
-		}		
-        return messages;
-	}
-	
 	//list my messages
 	public static JSONObject listMessagesId(int id, DBCollection col, Connection co) throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException {
 		JSONObject messages = new JSONObject();
@@ -141,6 +42,28 @@ public class MessageTools {
         }
         		
         return messages;
+	}
+	
+	//get idCpt from ongodb
+	public static int getIdCpt() throws UnknownHostException {
+		//recupere le compteur d'id dans mongodb
+		int idCpt=-1;
+		DBCollection idCol = Database.getCollection("idCpt");
+		DBCursor cursor = idCol.find();
+        if(cursor.hasNext()) {
+        	Object obj = (cursor.next()).get("id");
+        	idCpt = (int) Double.parseDouble(obj.toString());
+        }
+        
+        return idCpt;
+	}
+	
+	//update idCpt in mongodb
+	public static void updateIdCpt(int id) throws UnknownHostException {
+		DBCollection idCol = Database.getCollection("idCpt");
+		DBObject searchQuery = new BasicDBObject().append("id", id);
+		DBObject newCpt = new BasicDBObject().append("id", ++id);
+		idCol.update(searchQuery, newCpt);
 	}
 }
 

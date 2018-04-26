@@ -14,31 +14,6 @@ public class UserTools {
 		
 	}
 	
-	public static JSONObject addUser(String login, String mdp, String nom, String prenom, Connection co) throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException {
-		//resultat de retour ok/ko
-		JSONObject result = ServicesTools.serviceAccepted("succesfull");;
-	
-		//ajouter une ligne a la bd
-		//ajout guillemets
-		login = "\"" + login + "\"";
-		nom = "\"" + nom + "\"";
-		prenom = "\"" + prenom + "\"";
-		mdp = "\"" + mdp + "\"";
-		
-		String query = "INSERT INTO users VALUES(null, " + login +"," + mdp + "," + nom + "," + prenom + ");";
-		Statement st = co.createStatement();
-		try {
-			st.executeUpdate(query);
-		} catch (SQLException e) {
-			result = ServicesTools.serviceRefused("error add to db", -1);
-		}
-		
-		//close connections
-		st.close();		
-		
-		return result;
-	}
-	
 	public static boolean userExists(String login, Connection co) throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException {
 		//recup la ligne avec contenant ce login si elle existe
 		String query = "SELECT * FROM users WHERE login=\"" + login + "\"";
@@ -128,24 +103,7 @@ public class UserTools {
 		}
 		return key;		
 	}
-	
-	public static JSONObject loginUser(String login, String mdp, Connection co) throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException {
 		
-		//generate new connection key
-		String key = insertConnection(login, co);
-		int id = getUserId(login, co);
-		JSONObject res = ServicesTools.serviceAccepted("succesfully loged in");
-		try {
-			res.put("key", key);
-			res.put("id",  id);
-		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return res;
-		
-	}
-	
 	//inserer une connection et retourne une cle
 	public static String insertConnection(String login, Connection co) throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException {
 		String userId = "\""+getUserId(login, co)+"\"";
@@ -162,26 +120,6 @@ public class UserTools {
 		st.close();
 		
 		return key;
-	}
-	
-	public static JSONObject logoutUser(String key, Connection co) throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException {
-		//modifier la ligne correspondante en inserant 0 au chanmp connected
-		//si deja connecte on fait rien sinon on le deconnecte
-		if(isConnected(key, co)) {
-			//SQL TRUE : 1, FALSE : 0
-			String query = "UPDATE session SET connected = '0' WHERE cle = \""+key+"\";";
-			Statement st = co.createStatement();
-			st.executeUpdate(query);
-					
-			//close connections
-			st.close();
-		}else{
-			return ServicesTools.serviceRefused("deja deconnecte", -1);
-		}
-		
-		
-		return ServicesTools.serviceAccepted("Disconnected");
-		
 	}
 	
 	//recup id selon login
@@ -224,18 +162,33 @@ public class UserTools {
 	public static JSONObject getInfo(int id, Connection co) throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException, JSONException {
 		JSONObject result = new JSONObject();
 		//recupere l'id du detenteur de cette clé
-        String query = "SELECT login, nom, prenom FROM users WHERE id='" + id + "';";
+        String query = "SELECT id, login, nom, prenom FROM users WHERE id='" + id + "';";
         Statement st = co.createStatement();
-        ResultSet res = st.executeQuery(query);
         ResultSet cursor = st.executeQuery(query);
         while(cursor.next()) {
+        	result.put("id", cursor.getString("id"));
 			result.put("login", cursor.getString("login"));
 			result.put("nom", cursor.getString("nom"));
 			result.put("prenom", cursor.getString("prenom"));
 		}
         
+        //recup nombre de follows et de followers
+        String followsQuery = "SELECT COUNT(*) as total from friends WHERE source='"+id+"';";
+        String followersQuery = "SELECT COUNT(*) as total from friends WHERE cible='"+id+"';";
+        cursor = st.executeQuery(followsQuery);
+        while(cursor.next()) {
+        	result.put("follows", cursor.getInt("total"));
+        	//System.out.println(cursor.getInt("total"));
+        }
+        
+        
+        cursor = st.executeQuery(followersQuery);
+        while(cursor.next()) {
+        	result.put("followers", cursor.getInt("total"));
+        }
+        
+        
         //Close connections
-        res.close();
         st.close();
         //si la cle est correcte on renvoie l'id, -1 sinon
         return result;

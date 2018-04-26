@@ -47,6 +47,22 @@
 		<servlet-name>listMessagesFriends</servlet-name> 
 		<servlet-class>servlet.message.ListMessagesFriends</servlet-class> 
 	</servlet>
+	<servlet>
+		<servlet-name>addCom</servlet-name>
+		<servlet-class>servlet.message.AddCom</servlet-class> 
+	</servlet>
+	<servlet>
+		<servlet-name>deleteMessage</servlet-name>
+		<servlet-class>servlet.message.DeleteMessage</servlet-class> 
+	</servlet>
+	<servlet>
+		<servlet-name>deleteComment</servlet-name>
+		<servlet-class>servlet.message.DeleteComment</servlet-class> 
+	</servlet>
+	<servlet> 
+		<servlet-name>userInfo</servlet-name> 
+		<servlet-class>servlet.user.UserInfo</servlet-class> 
+	</servlet>
 	
 	
 	
@@ -94,6 +110,22 @@
 	<servlet-mapping> 
 		<servlet-name>listMessagesFriends</servlet-name> 
 		<url-pattern>/message/listmfriends</url-pattern> 
+	</servlet-mapping>
+	<servlet-mapping> 
+		<servlet-name>addCom</servlet-name> 
+		<url-pattern>/message/addcom</url-pattern> 
+	</servlet-mapping>
+	<servlet-mapping> 
+		<servlet-name>deleteMessage</servlet-name> 
+		<url-pattern>/message/deletem</url-pattern> 
+	</servlet-mapping>
+	<servlet-mapping> 
+		<servlet-name>deleteComment</servlet-name> 
+		<url-pattern>/message/deletec</url-pattern> 
+	</servlet-mapping>
+	<servlet-mapping> 
+		<servlet-name>userInfo</servlet-name> 
+		<url-pattern>/user/info</url-pattern> 
 	</servlet-mapping>
 	
 

@@ -5,6 +5,7 @@
 	<head>
 		
 		<link type="text/css" rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 		<!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script> -->
 		<link rel="stylesheet" type="text/css" href="./css/main.css">
 		<script type="text/javascript" src="./js/jquery.js"></script>
@@ -26,6 +27,7 @@
 			//recup env dans les cookies
 			
 			var env = readCookie("env");
+			// env.msgs = []
 			// $(init());
 			if(env == null){
 				//cookie n'existe pas
@@ -34,7 +36,9 @@
 			}
 			else{
 				//le cookie existe -> il faut l'utiliser
-				console.log(env);				
+				// console.log(env);
+				$(getFriends())		
+				// env.follows = []		
 				$(makeMainPanel(env.id, env.login))
 			}
 		</script>

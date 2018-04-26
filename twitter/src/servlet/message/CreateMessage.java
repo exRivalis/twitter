@@ -19,11 +19,15 @@ public class CreateMessage extends HttpServlet{
 		String key = request.getParameter("key");
 		String text = request.getParameter("text");
 		JSONObject result = new JSONObject();//contien la reponse seucces/echec
-		
-		try {
-			result = service.Message.createMessage(key, text);
-		}catch(Exception e) {
-			e.printStackTrace();
+		if(key==null || text==null) {
+			result = tools.ServicesTools.serviceRefused("argument invalides", -1);
+		}
+		else {
+			try {
+				result = service.Message.createMessage(key, text);
+			}catch(Exception e) {
+				e.printStackTrace();
+			}
 		}
 		
 		response.setContentType("text/plain");

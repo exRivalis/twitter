@@ -2,40 +2,37 @@ package servlet.friends;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.sql.SQLException;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
+import service.Friend;
 import tools.ServicesTools;
 
 public class Search extends HttpServlet {
 	public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		//recup params
-		String nom = request.getParameter("nom");
-		String prenom = request.getParameter("prenom");
+		String key = request.getParameter("key");
+		String query = request.getParameter("query");
 		JSONObject result = new JSONObject();
 		
-		if(nom.length() == 0 && prenom.length() == 0)
+		if(key.length() == 0 || query.length() == 0)
 			result = ServicesTools.serviceRefused("Arguments invalides", -1);
 		
 		else {
 			try {
-				if(nom.length() == 0) {
-					//search avec prenom
-					result = service.Friend.searchPrenom(prenom);
-				}else if(prenom.length() == 0){
-					//search avec nom
-					result = service.Friend.searchNom(nom);
-				}else {
-					//search avec nom et prenom
-					result = service.Friend.search(nom, prenom);
-				}
-			}catch(Exception e) {
+				result = Friend.search(query);
+			} catch (InstantiationException | IllegalAccessException | ClassNotFoundException | SQLException
+					| JSONException e) {
+				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+			
 		}
 		
 		response.setContentType("text/plain");

@@ -47,12 +47,12 @@ class FriendTest {
 	}
 	
 	//trouve un user existant avec nom et prenom
-	@Test
-	void testSearch() throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException, JSONException {
-		JSONObject result = service.Friend.search("jack", "brown");
+	//@Test
+	//void testSearch() throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException, JSONException {
+	//	JSONObject result = service.Friend.search("jack", "brown");
 		
-		assertEquals("found", result.get("message"));
-	}
+	//	assertEquals("found", result.get("message"));
+//	}
 	
 	//trouve un user existant avec nom et prenom
 	@Test
@@ -70,11 +70,12 @@ class FriendTest {
 		assertEquals("found", result.get("message"));
 	}
 	
-	//trouve un user inexistant
+	/*//trouve un user inexistant
 	@Test
 	void testSearchError() throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException, JSONException {
 		JSONObject result = service.Friend.search("jackooo", "brolkksa");
 		
 		assertEquals("empty", result.get("message"));
 	}
+	*/
 }

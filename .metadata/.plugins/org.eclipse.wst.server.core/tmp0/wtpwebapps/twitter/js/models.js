@@ -1,25 +1,32 @@
 //un message
-function Message(id,auteur, texte, date, comments){
+function Message(id, auteur, texte, date, comments){
 	this.id = id;
 	this.auteur = auteur;
 	this.texte = texte;
 	this.date = date;
 	if(comments == undefined)
-		comments = []
-	this.comments = comments;
+		this.comments = [];
+	else
+		this.comments = comments;
 }
 //renvoie le messaage sous format html interpretable durectement par le navigateur
 Message.prototype.getHtml = function(){
-	var html="<div class='message'>"
+	var html="<div class='message'  id='message_"+this.id+"'>"
+	html += "	<span id='delete_m' onclick='deleteMessage("+this.id+")'>&times;</span>"
 	html += "	<div class='corps_message'>"
 	html += "   	<div class='text_message'>"+this.texte+"</div>"	
 	html += "		<div class='info_message'>" 
 	html += "			<span class='auteur_message'>par " + this.auteur + "</span>"
 	html += "			<span class='date_message'> le " + this.date + "</span>"
 	html += "		</div>"
+	html += "	</div>"	
+	html += "	<div class='commentaires'></div>"
+	html += "	<div class='show_hide'>"
+	html += "	   <div class='show_comments' onclick='javascript:developpeMessage("+ JSON.stringify(this.id) +")'>"
+	html += "			<i class='fa fa-sort-down' id='developpe_comments'></i>"
+	html += "		</div>"
 	html += "	</div>"
-	html += "	<div class='commentaire'></div>"
-	html += "</div>"
+	html += " </div>"
 	// var html = "<div class='message' id='message_"+this.id+"'><div class='texte_message'>" + this.texte + "</div>";
 	// html += "<span id='show_comments'><input onclick='developpeMessage("+this.id+")' type='image' src='../ressources/show.png'/></span>";
 	// html += "<div class='info_message'><span class='auteur_message'>Posté par "+ this.auteur.login +"</span>";
@@ -38,8 +45,9 @@ Message.prototype.getHtml = function(){
 
 
 //commentaire
-function Comment(id, auteur, texte, date){
+function Comment(id, idm, auteur, texte, date){
 	this.id = id;
+	this.idm = idm;
 	this.auteur = auteur;
 	this.texte = texte;
 	this.date = date;
@@ -47,10 +55,11 @@ function Comment(id, auteur, texte, date){
 //renvoie le commentaire sous format html interpretable durectement par le navigateur
 Comment.prototype.getHtml = function(){
 	var html ="<div class='commentaire'>"
+	html += "	<span id='delete_c' onclick='deleteComment("+this.idm+","+this.id+")'>&times;</span>"
 	html += "<div class='texte_comment'>" + this.texte + "</div>";
 	//ecriture contenu du commentaire, auteur, date
 	html += "<div class='info_message'><span class='auteur_message'> par " +
-	this.auteur.login + "</span><span class='date_message'> le " + this.date + "</span> </div>";
+	this.auteur + "</span><span class='date_message'> le " + this.date + "</span> </div>";
 	html +="</div>"
 	return html;
 }
@@ -66,7 +75,9 @@ function init(){
 	env.idMin = -1;
 	env.idMax = -1;
 	env.nbMax = -1;
-	setVirtualMessages();
+	env.key = -1;
+	env.follows = []
+	// setVirtualMessages();
 }
 
 

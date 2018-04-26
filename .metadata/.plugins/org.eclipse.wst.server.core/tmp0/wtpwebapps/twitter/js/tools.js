@@ -2,60 +2,131 @@
 //fabtication d'une page html contenant selon le cas une page profile d'aun autre, mon profile ou une page d'accueil
 //en fonction de env.fromId on adapte le contenu html et les fichier css importes
 function makeMainPanel(fromId, fromLogin){
-	var html = "<div class='navbar'><a id='home_m_btn' value='home' href='#' onclick='goHome()'>Home</a>"
+	//contenu de la page
+	if(fromId != -1 && fromId == env.id){
+		//mon profile
+		pageUser(env.id, env.login)
+	}
+	else if(fromId != -1){
+		//autre profile
+		pageUser(fromId, fromLogin)
+	}
+	else if(fromId == -1){
+		//home page
+		makeHomePanel()
+	}
+}
+
+//charge dynamiquement un profile
+function pageUser(id, login){	
+	$.ajax({
+		type: "GET",
+		url: "user/info",
+		data: "key="+env.key+"&id="+id,
+		datatype: "JSON",
+		success: function(resp){responsePageUser(resp, id)},
+		error: function(jqXHR, textStatus, errorThrown){alert(textStatus+" "+errorThrown);},
+	})
+}
+
+function responsePageUser(resp, id){
+	var res = JSON.parse(resp, revival)
+	var info = res.info
+	var prenom = info.prenom
+	var nom = info.nom
+	var login = info.login
+	var nbFollowers = info.followers
+	var nbFollows = info.follows
+	// console.log(info);
 	
+
+	prenom = prenom.charAt(0).toUpperCase() + prenom.slice(1)
+	nom = nom.charAt(0).toUpperCase() + nom.slice(1)
+	// console.log(res);
+	
+	if(res.status == "OK"){
+		//fixed top nav bar
+		var html = "<div class='navbar'><a id='home_m_btn' value='home' href='#' onclick='goHome()'>Home</a>"
+		if(env.id != -1){
+			//je suis connecte: afficher deconnexion
+			html += "<a id='profil_m_btn' href='#' onclick='goProfile()'>Profile</a>"
+			html += "<a id='login_m_btn' href='#' onclick='login()'>Logout</a>"
+			
+		}else{
+			html += "<a id='login_m_btn' href='#' onclick='login()'>Login</a>"
+		}
+
+		html += "<form method='GET' action='javascript:(function(){return;})()' onsubmit='search()'><input id='m_search_bar' placeholder='Rechercher...'/></form></div>"
+		//fin du header
+		html += makeConnexionModal();
+		html += "<div id='profile_pres'>"
+		html += "            <div id='profile_picture_div'>"
+		html += "                <img id='profile_picture' src='./ressources/photo_de_profil.jpg'/>"
+		html += "            </div>"
+		html += "            <div id='profile_info' >"
+		html += "                <a class='pres_text' id='pres_name'>"+prenom+" "+nom+"</a>"
+		html += "                <a class='pres_text' id='pres_followers'>Followers: "+nbFollowers+"</a>"
+		html += "                <a class='pres_text' id='pres_follows'>Follows: "+nbFollows+"</a>"
+		html += "                <a id='follow_btn' href='#'>Follow</a>"
+		html += "            </div> "
+		html += "        </div>"
+		
+		html += "<div id='messages'>";
+		html += "	<div id='new_message'>"
+		html += "   	<textarea id='new_message_input' type='text' placeholder='Ecrivez un nouveau message...'></textarea>"
+		html += "		<input id='new_message_btn' type='submit' value='Poster' onclick='posterMessage($(\"#new_message_input\").val())'>"
+		html += "	</div>"
+		html += "	<div id='messages_container'></div>"
+		html += "</div>"
+		html += "</div>";//fin div corps_page
+
+		//recup tous les messages
+		$(completeMessages())
+		//chargement de la page
+		$('body').html(html);
+	}
+	else{
+		//TODO
+	}
+}
+//charger la page generale
+function makeHomePanel(){
+	//fixed top nav bar
+	var html = "<div class='navbar'><a id='home_m_btn' value='home' href='#' onclick='goHome()'>Home</a>"
 	if(env.id != -1){
 		//je suis connecte: afficher deconnexion
 		html += "<a id='profil_m_btn' href='#' onclick='goProfile()'>Profile</a>"
 		html += "<a id='login_m_btn' href='#' onclick='login()'>Logout</a>"
+		
 	}else{
 		html += "<a id='login_m_btn' href='#' onclick='login()'>Login</a>"
 	}
 
-	html += "<input id='m_search_bar' placeholder='Rechercher...'/></div>"
+	html += "<form method='GET' action='javascript:(function(){return;})()' onsubmit='search()'><input id='m_search_bar' placeholder='Rechercher...'/></form></div>"
 	//fin du header
-	//place au corps de la page
 	html += makeConnexionModal();
 	html += "<div id='corps_page'>";
-	if(fromId < 0){
-		//Home
-		html +=	"<!-- zone de statistiques -->";
-		html +=	"<div id='stats' class='rounded_div'>";
-		html += "<div>stats</div>"
-		html += "</div>";//fin div stats
-		if(env.id!= -1){
-			html += "<div id='messages'>";
-			html += "	<div id='new_message'>"
-			html += "   	<textarea id='new_message_input' type='text' placeholder='Ecrivez un nouveau message...'></textarea>"
-			html += "		<input id='new_message_btn' type='submit' value='Poster' onclick='posterMessage($(\"#new_message_input\").val())'>"
-			html += "	</div>"
-			html += "	<div id='messages_container'>container</div>"
-			html += "</div>"
-		}
-	}
-	else if(fromId == env.id && env.id != -1){
-		//mon profile
-		// html += "<div>Mon profile</div>"
+	html +=	"	<!-- zone de statistiques -->";
+	html +=	"	<div id='stats'>";
+	html += "		<div></div>"
+	html += "	</div>";
+	//si je suis connecte afficher une zone de saisi sinon rien du tout
+	if(env.id!= -1){
 		html += "<div id='messages'>";
-			html += "	<div id='new_message'>"
-			html += "   	<textarea id='new_message_input' type='text' placeholder='Ecrivez un nouveau message...'></textarea>"
-			html += "		<input id='new_message_btn' type='submit' value='Poster' onclick='posterMessage($(\"#new_message_input\").val())'>"
-			html += "	</div>"
-			html += "	<div id='messages_container'>container</div>"
-			html += "</div>"
+		html += "	<div id='new_message'>"
+		html += "   	<textarea id='new_message_input' type='text' placeholder='Ecrivez un nouveau message...'></textarea>"
+		html += "		<input id='new_message_btn' type='submit' value='Poster' onclick='posterMessage($(\"#new_message_input\").val())'>"
+		html += "	</div>"
+		html += "	<div id='messages_container'></div>"
+		html += "</div>"
+	}
 
-	}
-	else if(fromId != env.id){
-		//autre profile
-		//TODO
-		html += "<div>Autre profile</div>"
-	}
 	html += "</div>";//fin div corps_page
 
-	//recup tous messages
+	//recup tous les messages
 	$(completeMessages())
+	//chargement de la page
 	$('body').html(html);
-
 }
 
 function makeConnexionModal(){
@@ -118,10 +189,7 @@ function makeRegisterPanel(){
 	
 	$('body').html(html);
 }
-//charge dynamiquement une autre page html
-function pageUser(id, login){
-	makeMainPanel(id, login, env.query);
-}
+
 
 //permet de parser un JSON text en objet javascript: JSON.parse(json_text, revival)
 function revival(key, value){
@@ -167,7 +235,7 @@ function goHome(){
 
 //profile
 function goProfile(){
-	makeMainPanel(env.id, env.login);
+	pageUser(env.id, env.login);
 }
 
 
@@ -200,4 +268,120 @@ function readCookie(name){
 
 function eraseCookie(name){
 	createCookie(name, null, -1);
+}
+
+//follow a user from his profile
+function gestionFollow(id){
+	var content = $("#follow_m_btn").html()
+	if(conttent == "Follow"){
+		follow(id)
+	}else{
+		unfollow(id)
+	}
+	
+}
+function follow(id){	
+	$.ajax({
+		type: "GET",
+		url: "friends/add",
+		data: "key="+env.key+"&id_friend="+id,
+		datatype: "JSON",
+		success: function(resp){responseFollow(resp, id)},
+		error: function(jqXHR, textStatus, errorThrown){alert(textStatus+" "+errorThrown);},
+	})	
+}
+
+function responseFollow(resp, id){
+	var res = JSON.parse(resp, revival);
+	if(res.status == "OK"){
+		
+	}
+	else{
+		alert(res.error)
+	}
+}
+
+function unfollow(id){	
+	$.ajax({
+		type: "GET",
+		url: "friends/remove",
+		data: "key="+env.key+"&id_friend="+id,
+		datatype: "JSON",
+		success: function(resp){responseUnfollow(resp, id)},
+		error: function(jqXHR, textStatus, errorThrown){alert(textStatus+" "+errorThrown);},
+	})	
+}
+
+function responseUnfollow(resp, id){
+	var res = JSON.parse(resp, revival);
+	if(res.status == "OK"){
+		
+	}
+	else{
+		alert(res.error)
+	}
+}
+
+//recup mes follows/friends
+function getFriends(){
+	if(env.key != -1){
+		$.ajax({
+			type: "GET",
+			url: "friends/listfriends",
+			data: "key="+env.key,
+			datatype: "JSON",
+			success: function(resp){responseFriends(resp)},
+			error: function(jqXHR, textStatus, errorThrown){alert(textStatus+" "+errorThrown);},
+		})
+	}
+	else{
+		env.follows = []
+	}
+}
+
+function responseFriends(resp){
+	var res = JSON.parse(resp, revival)
+	if(res.status == "OK"){
+		for(friend in res.friends)
+			env.follows[friend]=(res.friends[friend]);
+		console.log(env.follows);
+		
+	}else{
+		alrts(res.error)
+	}
+}
+
+
+//lancer un recherche pour un utilisateur
+function search(){
+	//recup contenu de la recherche
+	var query = $("#m_search_bar").val();
+	//remplacer les espace par "_"
+	query = query.replace(" ", "_");
+	console.log(query.length);
+	
+	if(query.length > 0){
+		//ajax query
+		$.ajax({
+			type: "GET",
+			url: "friends/search",
+			data: "key="+env.key+"&query="+query,
+			datatype: "JSON",
+			success: function(resp){responseSearch(resp)},
+			error: function(jqXHR, textStatus, errorThrown){alert(textStatus+" "+errorThrown);},
+		})
+	}	
+}
+
+function responseSearch(resp){
+	var res = JSON.parse(resp, revival)
+	console.log(res.message);
+	
+	if(res.status == "OK"){
+		if(res.message == "found")
+			console.log(res);
+	}
+	else{
+		alert(res.message)
+	}
 }

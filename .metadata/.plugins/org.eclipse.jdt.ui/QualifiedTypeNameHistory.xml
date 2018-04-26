@@ -19,11 +19,12 @@
 <fullyQualifiedTypeName name="java.sql.Statement"/>
 <fullyQualifiedTypeName name="java.sql.ResultSet"/>
 <fullyQualifiedTypeName name="javax.swing.plaf.synth.SynthSeparatorUI"/>
-<fullyQualifiedTypeName name="tools.ServicesTools"/>
 <fullyQualifiedTypeName name="tools.UserTools"/>
 <fullyQualifiedTypeName name="tools.FriendTools"/>
 <fullyQualifiedTypeName name="test.UserTest"/>
 <fullyQualifiedTypeName name="service.User"/>
 <fullyQualifiedTypeName name="javax.servlet.http.HttpServlet"/>
 <fullyQualifiedTypeName name="service.Friend"/>
+<fullyQualifiedTypeName name="java.util.Iterator"/>
+<fullyQualifiedTypeName name="tools.ServicesTools"/>
 </qualifiedTypeNameHistroy>
