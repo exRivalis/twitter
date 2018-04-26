@@ -698,3 +698,39 @@ body{
 	margin-top: 10px;
 	background-color: #fff;/*rgba(0, 0, 0, 0.05); */
 }
+
+#search_result{
+	text-align: center;
+	/* width: 80%; */
+	display: block;
+}
+
+.user{
+	/* width: 100%; */
+	display: block;
+	cursor: pointer;
+}
+
+.user_info{
+	/* width: 70%; */
+	display: inline-flex;
+	vertical-align: middle;
+	padding-top: 6px;
+	height: 80px;
+	font-size: 20px;
+	color: #0F9295;/*#333;*/
+}
+/* .user_name{
+	margin-bottom: 20px;
+} */
+.user_picture{
+	display: inline-flex;	
+	width: 80px;
+	height: 80px;
+}
+.search_picture{
+	width:60px;
+	height: 50px;
+	margin-top: 15px;
+	margin-bottom: 15px;
+}

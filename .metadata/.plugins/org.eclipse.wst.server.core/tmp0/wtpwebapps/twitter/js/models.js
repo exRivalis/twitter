@@ -64,6 +64,38 @@ Comment.prototype.getHtml = function(){
 	return html;
 }
 
+// function User(id, login, nom, prenom){
+// 	this.id = id;
+// 	this.login = login
+// 	this.nom = nom.charAt(0).toUpperCase() + nom.splice(1);
+// 	this.prenom = prenom.charAt(0).toUpperCase() + prenom.splice(1);
+// }
+
+// User.prototype.getHtml = function(){
+// 	var html = "<div class='user'>"
+// 	html +=	"		<div class='user_picture'>"
+// 	html +=	"			<img class='profile_picture' src='../ressources/photo_de_profil.jpg'/>"
+// 	html +=	"		</div>"
+// 	html +=	"		<div class='user_info'>"
+// 	html +=	"			<span class='user_name'>"+this.prenom +" "+ this.nom+"</span>"
+// 	html +=	"		</div>"
+// 	html +=	"	</div>"
+// 	return html
+// }
+
+function userToHtml(id, login, nom, prenom){
+	// nom = nom.charAt(0).toUpperCase() + nom.splice(1);
+	// prenom = prenom.charAt(0).toUpperCase() + prenom.splice(1);
+	var html = "<div class='user'>"
+	html +=	"		<div class='user_picture'>"
+	html +=	"			<img class='search_picture' src='./ressources/photo_de_profil.jpg'/>"
+	html +=	"		</div>"
+	html +=	"		<div class='user_info'>"
+	html +=	"			<span class='user_name'>"+prenom +" "+ nom+"</span>"
+	html +=	"		</div>"
+	html +=	"	</div>"
+	return html
+}
 //init: initialise l'environnement de la page pour le travail hors ligne
 function init(){
 	noConnection = false;

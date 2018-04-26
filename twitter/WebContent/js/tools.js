@@ -190,6 +190,40 @@ function makeRegisterPanel(){
 	$('body').html(html);
 }
 
+//make search result panel
+function makeSearchResultPanel(usersHtml){
+	//fixed top nav bar
+	// console.log(users);
+	var html = "<div class='navbar'><a id='home_m_btn' value='home' href='#' onclick='goHome()'>Home</a>"
+	if(env.id != -1){
+		//je suis connecte: afficher deconnexion
+		html += "<a id='profil_m_btn' href='#' onclick='goProfile()'>Profile</a>"
+		html += "<a id='login_m_btn' href='#' onclick='login()'>Logout</a>"
+		
+	}else{
+		html += "<a id='login_m_btn' href='#' onclick='login()'>Login</a>"
+	}
+
+	html += "<form method='GET' action='javascript:(function(){return;})()' onsubmit='search()'><input id='m_search_bar' placeholder='Rechercher...'/></form></div>"
+	//fin du header
+	html += makeConnexionModal();
+	html += "<div id='corps_page'>";
+	html +=	"	<!-- zone de statistiques -->";
+	html +=	"	<div id='stats'>";
+	html += "		<div></div>"
+	html += "	</div>";
+	//si je suis connecte afficher une zone de saisi sinon rien du tout
+	if(env.id!= -1){
+		html += "<div id='search_result'>";
+		html += usersHtml
+		html += "</div>"
+	}
+
+	html += "</div>";//fin div corps_page
+
+	//chargement de la page
+	$('body').html(html);
+}
 
 //permet de parser un JSON text en objet javascript: JSON.parse(json_text, revival)
 function revival(key, value){
@@ -375,11 +409,17 @@ function search(){
 
 function responseSearch(resp){
 	var res = JSON.parse(resp, revival)
-	console.log(res.message);
+	var html = ""
 	
 	if(res.status == "OK"){
-		if(res.message == "found")
-			console.log(res);
+		if(res.message == "found"){
+			for(key in res.users){
+				var user = res.users[key]
+				// console.log(user);
+				html += userToHtml(user.id, user.login, user.nom, user.prenom)
+			}
+		}
+		makeSearchResultPanel(html)
 	}
 	else{
 		alert(res.message)

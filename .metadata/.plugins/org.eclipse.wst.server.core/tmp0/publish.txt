@@ -1,3 +1,3 @@
 #Tomcat publish data
-#Thu Apr 26 15:34:10 CEST 2018
+#Fri Apr 27 00:47:42 CEST 2018
 org.eclipse.jst.jee.server\:/binary\:/home/exrivalis/Documents/s6/3i017/twitter/WebContent/twitter.war=twitter.war
