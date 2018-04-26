@@ -141,6 +141,72 @@ body{
 	border-style: solid;
 }
 
+#profile_pres{
+	/* display: block; */
+	display: inline-block;
+	width: 100%;
+	height: 300px;
+	margin-top: 50px;
+	margin-bottom: 80px;
+	padding-top: 20px;
+	text-align: center;
+	background-color: #e6e6e6;
+	/* border-radius: 5px; */
+}
+
+#profile_picture_div{
+	width: 40%;
+	height: 170px;
+	margin-left: 30%
+}
+
+#profile_picture{
+	width: 160px;
+	height: 160px;
+	border-radius: 50%;
+	/* margin-left: 15%; */
+}
+
+#profile_info{
+	background-color: white;
+	width: 40%;
+	height: auto;
+	border-radius: 5px;
+	margin-left: 30%;	
+	padding-top: 20px;
+	padding-bottom: 20px;
+	/* border-width: 1px 1px 1px;
+	border-style: solid;
+	border-color: grey; */
+	box-shadow: 2px 2px 1px 1px rgba(0, 0, 0, 0.1);
+	box-shadow: 1px 1px 2px 2px rgba(0, 0, 0, 0.1);
+	
+}
+
+#follow_btn{
+	display: inline-block;
+	border-radius: 5px;
+	width: 100px;
+	color: #f2f2f2;
+	background: #0F9295;
+	text-align: center;
+	margin-top: 5px;
+    padding: 8px;
+    text-decoration: none;
+}
+#follow_btn:hover{
+	background: #19e6e6;
+}
+#pres_name{
+	font-size: 22px;
+	color: #4d4d4d;
+	/* text-shadow: 1px 1px Opx black; */
+}
+.pres_text{
+	display: block;
+	font-size: 16px;
+	color: #666666;
+}
 /* connexionPanel */
 #co_central{
 	margin-top: 100px;

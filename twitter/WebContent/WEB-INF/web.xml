@@ -59,6 +59,10 @@
 		<servlet-name>deleteComment</servlet-name>
 		<servlet-class>servlet.message.DeleteComment</servlet-class> 
 	</servlet>
+	<servlet> 
+		<servlet-name>userInfo</servlet-name> 
+		<servlet-class>servlet.user.UserInfo</servlet-class> 
+	</servlet>
 	
 	
 	
@@ -118,6 +122,10 @@
 	<servlet-mapping> 
 		<servlet-name>deleteComment</servlet-name> 
 		<url-pattern>/message/deletec</url-pattern> 
+	</servlet-mapping>
+	<servlet-mapping> 
+		<servlet-name>userInfo</servlet-name> 
+		<url-pattern>/user/info</url-pattern> 
 	</servlet-mapping>
 	
 

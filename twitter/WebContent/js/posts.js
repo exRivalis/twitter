@@ -1,5 +1,4 @@
 //recup les messages du serveur ou de la bd local en cas de noConnection
-
 function completeMessages(){
 	$.ajax({
 		type: "GET",
