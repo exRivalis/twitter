@@ -4,6 +4,9 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 import org.json.JSONException;
@@ -108,14 +111,18 @@ public class UserTools {
 	public static String insertConnection(String login, Connection co) throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException {
 		String userId = "\""+getUserId(login, co)+"\"";
 		String key = generateKey();
-		System.out.println(userId);
 		//ajout connection a la table session
 		//SQL TRUE : 1, FALSE : 0
-		String query = "INSERT INTO session VALUES('"+key+"', "+userId+ ", \"1\");";
-		//System.out.println(query);
+		
+		//disconnect elsewhere
+		String query = "UPDATE session SET connected='0' WHERE userId="+userId+";";
 		Statement st = co.createStatement();
 		st.executeUpdate(query);
-				
+		//connecte
+		query = "INSERT INTO `session`(`cle`, `userId`, `connected`, `time`) VALUES ('"+key+"',"+userId+",'1','"+(new Timestamp(System.currentTimeMillis()))+"');";
+		// = "INSERT INTO session VALUES('"+key+"', "+userId+ ", '1', '"+(new Timestamp(System.currentTimeMillis()))+"');";
+		st.executeUpdate(query);
+		
 		//close connections
 		st.close();
 		
@@ -163,6 +170,8 @@ public class UserTools {
 		JSONObject result = new JSONObject();
 		//recupere l'id du detenteur de cette clé
         String query = "SELECT id, login, nom, prenom FROM users WHERE id='" + id + "';";
+        List followers = new ArrayList<>();
+        List followees = new ArrayList<>();
         Statement st = co.createStatement();
         ResultSet cursor = st.executeQuery(query);
         while(cursor.next()) {
@@ -173,25 +182,57 @@ public class UserTools {
 		}
         
         //recup nombre de follows et de followers
-        String followsQuery = "SELECT COUNT(*) as total from friends WHERE source='"+id+"';";
-        String followersQuery = "SELECT COUNT(*) as total from friends WHERE cible='"+id+"';";
+        String followsQuery = "SELECT * from friends WHERE source='"+id+"';";
+        String followersQuery = "SELECT * from friends WHERE cible='"+id+"';";
         cursor = st.executeQuery(followsQuery);
         while(cursor.next()) {
-        	result.put("follows", cursor.getInt("total"));
-        	//System.out.println(cursor.getInt("total"));
+        	
+        	//result.put("follows", cursor.getInt(""));
+        	followees.add(cursor.getString("source"));
         }
         
         
         cursor = st.executeQuery(followersQuery);
         while(cursor.next()) {
-        	result.put("followers", cursor.getInt("total"));
+//        	result.put("followers", cursor.getArray("followers"));
+        	followers.add(cursor.getString("source"));
         }
         
         
         //Close connections
         st.close();
         //si la cle est correcte on renvoie l'id, -1 sinon
+        result.put("followers", followers);
+        result.put("followees", followees);
         return result;
+	}
+	
+	//verifier si une cle est toujours valide i.e. user actif
+	public static boolean checkKeyValidity(String key, Connection co) throws SQLException, InstantiationException, IllegalAccessException, ClassNotFoundException {
+		if(isConnected(key, co)){
+			String query = "Select connected, time from session where cle='"+key+"';";
+			Statement st = co.createStatement();
+			ResultSet res = st.executeQuery(query);
+			while(res.next()) {
+				Timestamp time = new Timestamp(System.currentTimeMillis() - 60*1000); //une minute
+				Timestamp start = res.getTimestamp(2);
+				//deco si inactif plus de x minutes
+				if(time.after(start)) {
+					//timeout : deco
+					query = "update session SET connected='0' WHERE cle=\""+key+"\";";
+					st.executeUpdate(query);
+					return false;
+				}else {
+					//recharger key
+					query = "update session SET time=\""+(new Timestamp(System.currentTimeMillis()))+"\" WHERE cle=\""+key+"\";";
+					st = co.createStatement();
+					st.executeUpdate(query);
+					return true;
+					
+				}
+			}
+		}
+		return false;
 	}
    	
 }

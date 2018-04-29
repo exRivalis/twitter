@@ -9,15 +9,23 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.json.JSONObject;
 
+import tools.ServicesTools;
+
 public class ListAllMessages extends HttpServlet{
 	public void doGet(HttpServletRequest request,HttpServletResponse response) throws IOException {
 		
+		String key = request.getParameter("key");
+		String limit = request.getParameter("limit");
+		String skip = request.getParameter("skip");
 		JSONObject result = new JSONObject();
-		
-		try {
-			result = service.Message.listAllMessages();
-		}catch(Exception e){
-			e.printStackTrace();
+		if(key == null || limit == null || skip == null )
+			result = ServicesTools.serviceRefused("invalid arguments", -1);
+		else{
+			try {
+				result = service.Message.listAllMessages(key, Integer.parseInt(limit), Integer.parseInt(skip));
+			}catch(Exception e){
+				e.printStackTrace();
+			}
 		}
 		
 		response.setContentType("text/plain");

@@ -1,0 +1,29 @@
+package servlet.message;
+
+import java.io.IOException;
+import java.io.PrintWriter;
+
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.json.JSONObject;
+
+//list messages of a particular user
+public class ListMessages extends HttpServlet{
+	public void doGet(HttpServletRequest request,HttpServletResponse response) throws IOException {
+		String key = request.getParameter("key");
+		String id = request.getParameter("id");
+		JSONObject result = new JSONObject();
+		
+		try {
+			result = service.Message.listMessages(key, id);
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		
+		response.setContentType("text/plain");
+		PrintWriter out = response.getWriter();
+		out.print(result.toString());
+	}
+}

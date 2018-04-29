@@ -1,24 +1,46 @@
 //recup les messages du serveur ou de la bd local en cas de noConnection
-function completeMessages(){
-	$.ajax({
-		type: "GET",
-		url: "message/listall",
-		data: "",
-		datatype: "JSON",
-		success: function(resp){completeMessagesResponse(resp)},
-		error: function(jqXHR, textStatus, errorThrown){alert("error servlet");},
-	})
+function completeMessages(id){
+	/*
+	* skip: sauter les skip premiers elements
+	* limit: recuperer les env.nbMax premiers elements
+	*/
+	var servlet = ""
+	var servletData = ""
+	env.nbMax = 10
+	// env.skip = 0
+	//console.log("complete")
+	if(env.id != -1){
+		if(id == -1){
+			servlet = "message/listall"
+			servletData = "key="+env.key+"&limit="+env.nbMax+"&skip="+env.skip
+			//console.log(servletData)
+		}
+		else{
+			servlet = "message/list"
+			servletData = "key="+env.key+"&id="+id+"&limit="+env.nbMax+"&skip="+env.skip
+			//console.log(servletData)
+		}
+		$.ajax({
+			type: "GET",
+			url: servlet,
+			data: servletData,
+			datatype: "JSON",
+			success: function(resp){completeMessagesResponse(resp, id)},
+			error: function(jqXHR, textStatus, errorThrown){alert("error servlet");},
+		})
+	}
 }
 
 //gestion de la réponse du serveur quand elle arrive
-function completeMessagesResponse(resp){
-	// TODO maj env.minId/ maxId/ msgs
-	//Message(id,auteur, texte, date, comments)
-
+function completeMessagesResponse(resp, mid){
+	
 	var messagesHtml = "";
 	var res = JSON.parse(resp, revival);
 	if(res.status == "OK"){
 		messages = res.messages
+		//maj env.skip pour la prochine recup
+		// env.skip += messages
+		env.skip += Object.keys(messages).length;
 		
 		for(var key in messages){
 			var msgMeta = messages[key]
@@ -26,23 +48,37 @@ function completeMessagesResponse(resp){
 			var coms = []
 			for(var c in msgMeta.commentaires){
 				var com = msgMeta.commentaires[c]
-				coms.push(new Comment(com.id, msgMeta.id, com.user_id, com.text, com.date))				
+				//console.log(com.date);
+				
+				coms.push(new Comment(com.id, msgMeta.id, com.auteur, com.text, com.date))				
 			}
 			
-			var msg = new Message(msgMeta.id, msgMeta.user_id, msgMeta.text, msgMeta.date, coms)
+			var msg = new Message(msgMeta.id, msgMeta.auteur, msgMeta.text, msgMeta.date, coms)
 			
 			env.msgs[msg.id]=msg			
-			messagesHtml += msg.getHtml()
-
 			//update idMin et idMax
 			if(env.idMin > msgMeta.id)
 				env.idMin = msgMeta.id
 			if(env.idMax < msgMeta.id)
 				env.idMax = msgMeta.id
-	  	}
+		  }
+		for(var key in env.msgs){
+			messagesHtml = env.msgs[parseInt(key)].getHtml() + messagesHtml			
+		}
+		  //ajout bouton charger
+		  messagesHtml += "<a id='charger' onclick='completeMessages("+mid+")'>Plus de posts</a>"
 	   $('#messages_container').html(messagesHtml);
-	//    console.log("env", env.msgs);
-	   
+		
+	   //update messages when on bottom of the page
+	//    function handleScrollDown(event){
+	// 		if($(window).scrollTop() + $(window).height() == $(document).height()) {
+	// 			alert("bottom!");
+	// 		}
+	//    }
+	//    window.addEventListener("scroll", handleScrollDown, false);	   
+	}
+	else if(res.error = "timeout"){
+		$(makeConnexionPanel)
 	}
 	else{
 		alert(res.error)
@@ -103,7 +139,12 @@ function developpeMessage(m_id){
 
 		var coms = ""
 		//ajout des commentaires
+		//console.log(m_id);
+		//console.log(env.msgs);
+		
+		
 		for(var i in env.msgs[m_id].comments){
+			//console.log(env.msgs[m_id].comments[i]);
 			coms += env.msgs[m_id].comments[i].getHtml();
 		}
 		//ajout de la zone de saisi d'un nouveau commentaire
@@ -138,7 +179,7 @@ function erreur(message){
 
 
 //poster un message -> creer un nouveau message
-function posterMessage(text){
+function posterMessage(id, text){
 	if(text.length == 0){
 		alert("Rien à poster")
 	}	
@@ -146,21 +187,23 @@ function posterMessage(text){
 		$.ajax({
 			type: "GET",
 			url: "message/create",
-			data: "key="+env.key+"&text="+text,
+			data: "key="+env.key+"&text="+text+"&cible="+id,
 			datatype: "JSON",
-			success: function(resp){responseMessage(resp)},
+			success: function(resp){responseMessage(id, resp)},
 			error: function(jqXHR, textStatus, errorThrown){alert("error servlet");},
 		})
 	}	
 }
 
-function responseMessage(resp){
+function responseMessage(id, resp){
 	var res = JSON.parse(resp, revival);
 	if(res.status == "OK"){
 		// alert("Message posté")
 		$("#new_message_input").val("")
-		//recharger la page
-		$(makeMainPanel(env.id, env.login));
+		//ajout post a la page
+		var msg = new Message(res.data.id, res.data.auteur, res.data.text, res.data.date, [])
+		$("#messages_container").prepend(msg.getHtml())
+		//$(makeMainPanel(id, env.login));
 	}
 	else{
 		alert(res.error)
@@ -189,34 +232,22 @@ function responseCommentaire(resp, m_id){
 	if(res.status == "OK"){
 		// alert("Commentaire posté")
 		$("#new_com_input").val("")
+		// ajouter le commentaire a env
+		var c = res.commentaire;
+		var com = new Comment(c.id, c.idm, c.auteur, c.text, c.date);
+		env.msgs[m_id].comments.push(com);
 		//mettre a jour la section commenatire
-		$(reloadMessage(res, m_id, -1));
+		$(reloadMessage(res, m_id));
 	}
 	else{
 		alert(res.error)
 	}
 }
 
-//rechargerla section commentaire
-function reloadMessage(res, m_id, c_id){
-	if(c_id == -1){
-		// ajouter le commentaire a env
-		var c = res.commentaire;
-		var com = new Comment(c.id, c.idm, c.user_id, c.text, c.date);
-		env.msgs[m_id].comments.push(com);
-	}else{
-		// le supprimer de env
-		var i = 0;
-		for(i in env.msgs[m_id].comments){
-			var tmp_c = env.msgs[m_id].comments[i]
-			if(tmp_c.id == c_id)
-				break;
-		}
-		env.msgs[m_id].comments = null;
-	}
-	
+//recharger la section commentaire
+function reloadMessage(res, m_id){	
 	//rechargement des commentaires
-	var coms = []
+	var coms = ""
 	for(var i in env.msgs[m_id].comments){
 		coms += env.msgs[m_id].comments[i].getHtml();
 	}
@@ -246,6 +277,15 @@ function responseDelMessage(resp, id){
 	var res = JSON.parse(resp, revival);
 	if(res.status == "OK"){
 		env.msgs[id] = null;
+		//maj affichage
+		var html = ""
+		
+		for(var i in env.msgs){
+			if(env.msgs[i] != null)
+				html = env.msgs[i].getHtml() + html
+		}
+		
+		$("#messages_container").html(html)
 	}
 	else{
 		alert(res.error)
@@ -266,8 +306,26 @@ function deleteComment(idM, idC){
 function responseDelComment(resp, idM, idC){
 	var res = JSON.parse(resp, revival);
 	if(res.status == "OK"){
-		env.msgs[idM].comments[idC] = null;
-		reloadMessage(res, idM, idC)
+		console.log(idC);
+		console.log(env.msgs[idM].comments)
+		// le supprimer de env
+		
+		// for(var i in env.msgs[idM].comments){
+		// 	var tmp_c = env.msgs[idM].comments[i]
+		// 	if(tmp_c != null && tmp_c.id == idC)
+		// 		break;
+		// }
+		//supprimer le commentaire de env
+		var coms = []
+		for(var i=0; i<env.msgs[idM].comments.length; i++){
+			if(env.msgs[idM].comments[i].id != idC){
+				coms.push(env.msgs[idM].comments[i]);
+			}
+		}
+		env.msgs[idM].comments = coms;
+		console.log(env.msgs[idM].comments)
+		//env.msgs[idM].comments[idC] = null;
+		reloadMessage(res, idM)
 	}
 	else{
 		alert(res.error)

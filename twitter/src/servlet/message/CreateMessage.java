@@ -18,13 +18,14 @@ public class CreateMessage extends HttpServlet{
 		//recup parametre
 		String key = request.getParameter("key");
 		String text = request.getParameter("text");
+		String cible = request.getParameter("cible");
 		JSONObject result = new JSONObject();//contien la reponse seucces/echec
-		if(key==null || text==null) {
+		if(key==null || text==null || cible == null) {
 			result = tools.ServicesTools.serviceRefused("argument invalides", -1);
 		}
 		else {
 			try {
-				result = service.Message.createMessage(key, text);
+				result = service.Message.createMessage(key, text, cible);
 			}catch(Exception e) {
 				e.printStackTrace();
 			}

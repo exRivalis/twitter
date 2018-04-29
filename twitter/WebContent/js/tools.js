@@ -2,18 +2,27 @@
 //fabtication d'une page html contenant selon le cas une page profile d'aun autre, mon profile ou une page d'accueil
 //en fonction de env.fromId on adapte le contenu html et les fichier css importes
 function makeMainPanel(fromId, fromLogin){
+	//initialiser env.Skip pour recuper les messages en partant du premier
+	env.skip = 0
+	env.fromId = fromId
+	env.fromLogin = fromLogin
 	//contenu de la page
-	if(fromId != -1 && fromId == env.id){
-		//mon profile
-		pageUser(env.id, env.login)
-	}
-	else if(fromId != -1){
-		//autre profile
-		pageUser(fromId, fromLogin)
-	}
-	else if(fromId == -1){
-		//home page
-		makeHomePanel()
+	if(env.id != -1){
+		if(fromId != -1 && fromId == env.id){
+			//mon profile
+			pageUser(env.id, env.login)
+		}
+		else if(fromId != -1){
+			//autre profile
+			//console.log("autre profile " +fromId+" "+fromLogin)
+			pageUser(fromId, fromLogin)
+		}
+		else if(fromId == -1){
+			//home page
+			makeHomePanel()
+		}
+	}else{
+		makeConnexionPanel()
 	}
 }
 
@@ -31,78 +40,105 @@ function pageUser(id, login){
 
 function responsePageUser(resp, id){
 	var res = JSON.parse(resp, revival)
-	var info = res.info
-	var prenom = info.prenom
-	var nom = info.nom
-	var login = info.login
-	var nbFollowers = info.followers
-	var nbFollows = info.follows
-	// console.log(info);
-	
-
-	prenom = prenom.charAt(0).toUpperCase() + prenom.slice(1)
-	nom = nom.charAt(0).toUpperCase() + nom.slice(1)
-	// console.log(res);
-	
 	if(res.status == "OK"){
+		var info = res.info
+		var prenom = info.prenom
+		var nom = info.nom
+		var login = info.login
+		var followers = info.followers
+		var follows = info.followees
+		// console.log(followers, follows);
+		env.msgs = []
+
+		prenom = prenom.charAt(0).toUpperCase() + prenom.slice(1)
+		nom = nom.charAt(0).toUpperCase() + nom.slice(1)
 		//fixed top nav bar
 		var html = "<div class='navbar'><a id='home_m_btn' value='home' href='#' onclick='goHome()'>Home</a>"
 		if(env.id != -1){
 			//je suis connecte: afficher deconnexion
 			html += "<a id='profil_m_btn' href='#' onclick='goProfile()'>Profile</a>"
 			html += "<a id='login_m_btn' href='#' onclick='login()'>Logout</a>"
+			html += "<form method='GET' action='javascript:(function(){return;})()' onsubmit='search()'>"
+			html += "<div id='radio_div'>"
+			html += "	<a id='radio'><input type='radio' name='radio' value='users' checked> 	Friends</a>"
+			html += "	<a id='radio'><input type='radio' name='radio' value='posts'> Posts</a>"
+			html += "</div>"
+			html += "<input id='m_search_bar' placeholder='Rechercher...'/>"
+			html += "</form></div>"
 			
 		}else{
 			html += "<a id='login_m_btn' href='#' onclick='login()'>Login</a>"
 		}
 
-		html += "<form method='GET' action='javascript:(function(){return;})()' onsubmit='search()'><input id='m_search_bar' placeholder='Rechercher...'/></form></div>"
+		
 		//fin du header
 		html += makeConnexionModal();
-		html += "<div id='profile_pres'>"
+		html += "<div id='corps_page'><div id='profile_pres'>"
 		html += "            <div id='profile_picture_div'>"
 		html += "                <img id='profile_picture' src='./ressources/photo_de_profil.jpg'/>"
 		html += "            </div>"
 		html += "            <div id='profile_info' >"
 		html += "                <a class='pres_text' id='pres_name'>"+prenom+" "+nom+"</a>"
-		html += "                <a class='pres_text' id='pres_followers'>Followers: "+nbFollowers+"</a>"
-		html += "                <a class='pres_text' id='pres_follows'>Follows: "+nbFollows+"</a>"
-		html += "                <a id='follow_btn' href='#'>Follow</a>"
+		html += "                <a class='pres_text' id='pres_followers'>Followers: "+followers.length+"</a>"
+		html += "                <a class='pres_text' id='pres_follows'>Follows: "+follows.length+"</a>"
+		if(env.id != id){
+			// console.log(followers.indexOf(env.id.toString()));
+			
+			if(followers.indexOf(env.id.toString()) != -1)
+				html += "        <a id='follow_btn' href='#' onclick='unfollow("+id+", \""+login+"\")'>Unfollow</a>"
+			else
+				html += "        <a id='follow_btn' href='#' onclick='follow("+id+", \""+login+"\")'>Follow</a>"
+		}
+		
 		html += "            </div> "
 		html += "        </div>"
 		
 		html += "<div id='messages'>";
-		html += "	<div id='new_message'>"
-		html += "   	<textarea id='new_message_input' type='text' placeholder='Ecrivez un nouveau message...'></textarea>"
-		html += "		<input id='new_message_btn' type='submit' value='Poster' onclick='posterMessage($(\"#new_message_input\").val())'>"
-		html += "	</div>"
+
+		//if co poster commentaire sur ma page ou celle de quelqu'un d'autre
+		if(env.id != -1){
+			html += "<div id='new_message'>"
+			html += "  	<textarea id='new_message_input' type='text' placeholder='Ecrivez un nouveau message...'></textarea>"
+			html += "	<input id='new_message_btn' type='submit' value='Poster' onclick='posterMessage("+id+", $(\"#new_message_input\").val())'>"
+			html += "</div>"
+		}
+		
 		html += "	<div id='messages_container'></div>"
 		html += "</div>"
-		html += "</div>";//fin div corps_page
+		html += "</div></div>";//fin div corps_page
 
-		//recup tous les messages
-		$(completeMessages())
+		//recup tous les messages postés sur son profile
+		$(completeMessages(id))
 		//chargement de la page
 		$('body').html(html);
 	}
-	else{
-		//TODO
+	else if(res.error == "timeout"){
+			$(makeConnexionPanel)
+	}else{
+		alert(res.error);
 	}
 }
 //charger la page generale
 function makeHomePanel(){
+	//initialiser env.Skip pour recuper les messages en partant du premier
+	env.skip = 0
 	//fixed top nav bar
 	var html = "<div class='navbar'><a id='home_m_btn' value='home' href='#' onclick='goHome()'>Home</a>"
 	if(env.id != -1){
 		//je suis connecte: afficher deconnexion
 		html += "<a id='profil_m_btn' href='#' onclick='goProfile()'>Profile</a>"
 		html += "<a id='login_m_btn' href='#' onclick='login()'>Logout</a>"
-		
+		html += "<form method='GET' action='javascript:(function(){return;})()' onsubmit='search()'>"
+		html += "<div id='radio_div'>"
+		html += "	<a id='radio'><input type='radio' name='radio' value='users' checked> 	Friends</a>"
+		html += "	<a id='radio'><input type='radio' name='radio' value='posts'> Posts</a>"
+		html += "</div>"
+		html += "<input id='m_search_bar' placeholder='Rechercher...'/>"
+		html += "</form></div>"
 	}else{
 		html += "<a id='login_m_btn' href='#' onclick='login()'>Login</a>"
 	}
 
-	html += "<form method='GET' action='javascript:(function(){return;})()' onsubmit='search()'><input id='m_search_bar' placeholder='Rechercher...'/></form></div>"
 	//fin du header
 	html += makeConnexionModal();
 	html += "<div id='corps_page'>";
@@ -115,7 +151,7 @@ function makeHomePanel(){
 		html += "<div id='messages'>";
 		html += "	<div id='new_message'>"
 		html += "   	<textarea id='new_message_input' type='text' placeholder='Ecrivez un nouveau message...'></textarea>"
-		html += "		<input id='new_message_btn' type='submit' value='Poster' onclick='posterMessage($(\"#new_message_input\").val())'>"
+		html += "		<input id='new_message_btn' type='submit' value='Poster' onclick='posterMessage("+env.id+", $(\"#new_message_input\").val())'>"
 		html += "	</div>"
 		html += "	<div id='messages_container'></div>"
 		html += "</div>"
@@ -124,12 +160,14 @@ function makeHomePanel(){
 	html += "</div>";//fin div corps_page
 
 	//recup tous les messages
-	$(completeMessages())
+	$(completeMessages(-1))
 	//chargement de la page
 	$('body').html(html);
 }
 
 function makeConnexionModal(){
+	//initialiser env.Skip pour recuper les messages en partant du premier
+	env.skip = 0
 	var html ="<div id='login_modal' class='modal'>"
 		html +="	<div class='modal_content'>"
 		html +="		<span class='close_btn' onclick='closeLoginModal()'>&times;</span>"
@@ -150,6 +188,8 @@ function closeLoginModal(){
 	login_modal.style.display = 'none';
 }
 function makeConnexionPanel(){
+	//initialiser env.Skip pour recuper les messages en partant du premier
+	env.skip = 0
 	var html = ""
 	html += "<form id='login_form' class='insc_form' method='GET' action='javascript:(function(){return;})()' onSubmit='javascript:connexion(this)'>"
 	html += "	<div id='modal_top'>"
@@ -168,6 +208,8 @@ function makeConnexionPanel(){
 	$('body').html(html);
 }
 function makeRegisterPanel(){
+	//initialiser env.Skip pour recuper les messages en partant du premier
+	env.skip = 0
 	var html = ""
 	html += "<form class='insc_form' method='GET' action='javascript:(function(){return;})()' onSubmit='javascript:inscription(this)'>"
 	html += "	<div id='modal_top'>"
@@ -192,6 +234,8 @@ function makeRegisterPanel(){
 
 //make search result panel
 function makeSearchResultPanel(usersHtml){
+	//initialiser env.Skip pour recuper les messages en partant du premier
+	env.skip = 0
 	//fixed top nav bar
 	// console.log(users);
 	var html = "<div class='navbar'><a id='home_m_btn' value='home' href='#' onclick='goHome()'>Home</a>"
@@ -199,12 +243,17 @@ function makeSearchResultPanel(usersHtml){
 		//je suis connecte: afficher deconnexion
 		html += "<a id='profil_m_btn' href='#' onclick='goProfile()'>Profile</a>"
 		html += "<a id='login_m_btn' href='#' onclick='login()'>Logout</a>"
-		
+		html += "<form method='GET' action='javascript:(function(){return;})()' onsubmit='search()'>"
+		html += "<div id='radio_div'>"
+		html += "	<a id='radio'><input type='radio' name='radio' value='users' checked> 	Friends</a>"
+		html += "	<a id='radio'><input type='radio' name='radio' value='posts'> Posts</a>"
+		html += "</div>"
+		html += "<input id='m_search_bar' placeholder='Rechercher...'/>"
+		html += "</form></div>"
 	}else{
 		html += "<a id='login_m_btn' href='#' onclick='login()'>Login</a>"
 	}
 
-	html += "<form method='GET' action='javascript:(function(){return;})()' onsubmit='search()'><input id='m_search_bar' placeholder='Rechercher...'/></form></div>"
 	//fin du header
 	html += makeConnexionModal();
 	html += "<div id='corps_page'>";
@@ -264,17 +313,23 @@ function login(){
 
 //home
 function goHome(){
+	env.msgs = []
+	env.skip = 0;
 	makeMainPanel(-1, env.login);
 }
 
 //profile
 function goProfile(){
+	env.msgs = []
+	env.skip = 0;
 	pageUser(env.id, env.login);
 }
 
 
 //gestion cookies
 function createCookie(name, value, days){
+	//init env.msgs
+	env.msgs = []
 	if(days){
 		var date = new Date();
 		date.setTime(date.getTime() + (days*24*60*60*100));
@@ -314,42 +369,46 @@ function gestionFollow(id){
 	}
 	
 }
-function follow(id){	
+function follow(id, login){	
 	$.ajax({
 		type: "GET",
 		url: "friends/add",
 		data: "key="+env.key+"&id_friend="+id,
 		datatype: "JSON",
-		success: function(resp){responseFollow(resp, id)},
+		success: function(resp){responseFollow(resp, id, login)},
 		error: function(jqXHR, textStatus, errorThrown){alert(textStatus+" "+errorThrown);},
 	})	
 }
 
-function responseFollow(resp, id){
+function responseFollow(resp, id, login){
 	var res = JSON.parse(resp, revival);
 	if(res.status == "OK"){
-		
+		//recharger la page
+		makeMainPanel(id,login)
+	}
+	else if(res.error == "timeout"){
+		$(makeConnexionPanel);
 	}
 	else{
 		alert(res.error)
 	}
 }
 
-function unfollow(id){	
+function unfollow(id, login){	
 	$.ajax({
 		type: "GET",
 		url: "friends/remove",
 		data: "key="+env.key+"&id_friend="+id,
 		datatype: "JSON",
-		success: function(resp){responseUnfollow(resp, id)},
+		success: function(resp){responseUnfollow(resp, id, login)},
 		error: function(jqXHR, textStatus, errorThrown){alert(textStatus+" "+errorThrown);},
 	})	
 }
 
-function responseUnfollow(resp, id){
+function responseUnfollow(resp, id, login){
 	var res = JSON.parse(resp, revival);
 	if(res.status == "OK"){
-		
+		makeMainPanel(id,login)
 	}
 	else{
 		alert(res.error)
@@ -378,36 +437,47 @@ function responseFriends(resp){
 	if(res.status == "OK"){
 		for(friend in res.friends)
 			env.follows[friend]=(res.friends[friend]);
-		console.log(env.follows);
+		//console.log(env.follows);
 		
 	}else{
-		alrts(res.error)
+		alert(res.error)
 	}
 }
 
 
-//lancer un recherche pour un utilisateur
+//lancer un recherche pour un utilisateur ou un message
 function search(){
 	//recup contenu de la recherche
 	var query = $("#m_search_bar").val();
-	//remplacer les espace par "_"
-	query = query.replace(" ", "_");
-	console.log(query.length);
 	
-	if(query.length > 0){
+	
+	var radio = $("input[name='radio']:checked").val();
+	if(radio == "users" && query.length > 0){
+		//search for users
 		//ajax query
 		$.ajax({
 			type: "GET",
 			url: "friends/search",
 			data: "key="+env.key+"&query="+query,
 			datatype: "JSON",
-			success: function(resp){responseSearch(resp)},
+			success: function(resp){responseSearchUsers(resp)},
 			error: function(jqXHR, textStatus, errorThrown){alert(textStatus+" "+errorThrown);},
-		})
+		})	
+	}
+	else if(query.length > 0){
+		//search for posts
+		$.ajax({
+			type: "GET",
+			url: "message/search",
+			data: "key="+env.key+"&text="+query,
+			datatype: "JSON",
+			success: function(resp){responseSearchPosts(resp)},
+			error: function(jqXHR, textStatus, errorThrown){alert(textStatus+" "+errorThrown);},
+		})	
 	}	
 }
 
-function responseSearch(resp){
+function responseSearchUsers(resp){
 	var res = JSON.parse(resp, revival)
 	var html = ""
 	
@@ -415,11 +485,49 @@ function responseSearch(resp){
 		if(res.message == "found"){
 			for(key in res.users){
 				var user = res.users[key]
-				// console.log(user);
 				html += userToHtml(user.id, user.login, user.nom, user.prenom)
 			}
+		}else{
+			//aucun resultat trouve
+			html += "<a id='notfound'>42</a>"
 		}
 		makeSearchResultPanel(html)
+	}
+	else{
+		alert(res.message)
+	}
+}
+
+function responseSearchPosts(resp){
+	var res = JSON.parse(resp, revival)
+	var messagesHtml = ""
+	
+	if(res.status == "OK"){
+		if(res.message == "found"){
+			var messages = res.messages
+			env.msgs = []
+			//trier en fonction du score
+			keysSorted = Object.keys(messages).sort(function(a,b){return messages[b]-messages[a]})
+			
+			keysSorted.forEach(element => {
+				var m =messages[element]
+				//recup commentaires
+				var coms = []
+				for(var c in m.commentaires){
+					var com = m.commentaires[c]
+					coms.push(new Comment(com.id, m.id, com.auteur, com.text, com.date))				
+				}
+				var message = new Message(m.id, m.auteur, m.text, m.date, coms)
+				env.msgs[message.id]=message			
+				messagesHtml += message.getHtml()
+				$("#messages").html(messagesHtml)
+			});		
+		}
+		else{
+			//aucun resultat trouve
+			messagesHtml += "<a id='notfound'>42</a>"
+		}
+		makeSearchResultPanel(messagesHtml)
 	}
 	else{
 		alert(res.message)

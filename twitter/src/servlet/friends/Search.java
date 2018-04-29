@@ -26,7 +26,7 @@ public class Search extends HttpServlet {
 		
 		else {
 			try {
-				result = Friend.search(query);
+				result = Friend.search(key, query);
 			} catch (InstantiationException | IllegalAccessException | ClassNotFoundException | SQLException
 					| JSONException e) {
 				// TODO Auto-generated catch block

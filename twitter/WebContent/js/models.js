@@ -3,7 +3,8 @@ function Message(id, auteur, texte, date, comments){
 	this.id = id;
 	this.auteur = auteur;
 	this.texte = texte;
-	this.date = date;
+	this.date = new Date(parseInt(date))
+	this.day = this.date.toDateString() + " à "+this.date.getHours()+":"+this.date.getMinutes()
 	if(comments == undefined)
 		this.comments = [];
 	else
@@ -16,8 +17,8 @@ Message.prototype.getHtml = function(){
 	html += "	<div class='corps_message'>"
 	html += "   	<div class='text_message'>"+this.texte+"</div>"	
 	html += "		<div class='info_message'>" 
-	html += "			<span class='auteur_message'>par " + this.auteur + "</span>"
-	html += "			<span class='date_message'> le " + this.date + "</span>"
+	html += "			<span class='auteur_message'>" + this.auteur + "</span>"	
+	html += "			<span class='date_message'>, " + this.day + "</span>"
 	html += "		</div>"
 	html += "	</div>"	
 	html += "	<div class='commentaires'></div>"
@@ -27,18 +28,6 @@ Message.prototype.getHtml = function(){
 	html += "		</div>"
 	html += "	</div>"
 	html += " </div>"
-	// var html = "<div class='message' id='message_"+this.id+"'><div class='texte_message'>" + this.texte + "</div>";
-	// html += "<span id='show_comments'><input onclick='developpeMessage("+this.id+")' type='image' src='../ressources/show.png'/></span>";
-	// html += "<div class='info_message'><span class='auteur_message'>Posté par "+ this.auteur.login +"</span>";
-	// html += "<span class='date_message'> le " + this.date.getDate()+"/"+this.date.getMonth()+ "/"+this.date.getYear()+"</span></div>"
-	// // "/"+" à "+ this.date.getHours() +":"+this.date.getMinutes() +
-	// html += "<div class='comments_message'>";
-
-	// //ecriture des commentaires
-	// //TODO
-
-	// html += "</div><hr class='line'></div>";
-
 	return html;
 }
 
@@ -50,7 +39,8 @@ function Comment(id, idm, auteur, texte, date){
 	this.idm = idm;
 	this.auteur = auteur;
 	this.texte = texte;
-	this.date = date;
+	this.date = new Date(parseInt(date))
+	this.day = this.date.toDateString() + " à "+this.date.getHours()+":"+this.date.getMinutes()
 }
 //renvoie le commentaire sous format html interpretable durectement par le navigateur
 Comment.prototype.getHtml = function(){
@@ -58,35 +48,16 @@ Comment.prototype.getHtml = function(){
 	html += "	<span id='delete_c' onclick='deleteComment("+this.idm+","+this.id+")'>&times;</span>"
 	html += "<div class='texte_comment'>" + this.texte + "</div>";
 	//ecriture contenu du commentaire, auteur, date
-	html += "<div class='info_message'><span class='auteur_message'> par " +
-	this.auteur + "</span><span class='date_message'> le " + this.date + "</span> </div>";
+	html += "<div class='info_message'><span class='auteur_message'>" +
+	this.auteur + "</span><span class='date_message'>, " + this.day + "</span> </div>";
 	html +="</div>"
 	return html;
 }
 
-// function User(id, login, nom, prenom){
-// 	this.id = id;
-// 	this.login = login
-// 	this.nom = nom.charAt(0).toUpperCase() + nom.splice(1);
-// 	this.prenom = prenom.charAt(0).toUpperCase() + prenom.splice(1);
-// }
-
-// User.prototype.getHtml = function(){
-// 	var html = "<div class='user'>"
-// 	html +=	"		<div class='user_picture'>"
-// 	html +=	"			<img class='profile_picture' src='../ressources/photo_de_profil.jpg'/>"
-// 	html +=	"		</div>"
-// 	html +=	"		<div class='user_info'>"
-// 	html +=	"			<span class='user_name'>"+this.prenom +" "+ this.nom+"</span>"
-// 	html +=	"		</div>"
-// 	html +=	"	</div>"
-// 	return html
-// }
-
 function userToHtml(id, login, nom, prenom){
 	// nom = nom.charAt(0).toUpperCase() + nom.splice(1);
 	// prenom = prenom.charAt(0).toUpperCase() + prenom.splice(1);
-	var html = "<div class='user'>"
+	var html = "<div class='user' onclick='javascript:makeMainPanel("+id+",\""+login+"\")'>"
 	html +=	"		<div class='user_picture'>"
 	html +=	"			<img class='search_picture' src='./ressources/photo_de_profil.jpg'/>"
 	html +=	"		</div>"
@@ -106,12 +77,12 @@ function init(){
 	env.msgs = [];
 	env.idMin = -1;
 	env.idMax = -1;
-	env.nbMax = -1;
+	env.nbMax = 10;
+	env.skip = 0;
 	env.key = -1;
 	env.follows = []
 	// setVirtualMessages();
 }
-
 
 //generation de données pour le travail hors ligne
 function setVirtualMessages(){

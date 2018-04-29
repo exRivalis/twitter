@@ -9,16 +9,24 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.json.JSONObject;
 
+import tools.ServicesTools;
+
+//list messages of a particular user
 public class ListMessages extends HttpServlet{
 	public void doGet(HttpServletRequest request,HttpServletResponse response) throws IOException {
 		String key = request.getParameter("key");
-		
+		String id = request.getParameter("id");
+		String limit = request.getParameter("limit");
+		String skip = request.getParameter("skip");
 		JSONObject result = new JSONObject();
-		
-		try {
-			result = service.Message.listMessages(key);
-		}catch(Exception e){
-			e.printStackTrace();
+		if(key == null || limit == null || skip == null || id == null)
+			result = ServicesTools.serviceRefused("invalid arguments", -1);
+		else{
+			try {
+				result = service.Message.listMessages(key, id, Integer.parseInt(limit), Integer.parseInt(skip));
+			}catch(Exception e){
+				e.printStackTrace();
+			}
 		}
 		
 		response.setContentType("text/plain");

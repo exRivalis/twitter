@@ -17,18 +17,18 @@ import bd.Database;
 class MessageTest {
 
 	//creation de messages
-	@Test
-	void testCreateMessage() throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException, UnknownHostException, JSONException {
-		JSONObject result = service.Message.createMessage("bExympTvaNCJKnTnIhNhilvVpiKooykb", "teste message junit"	);
-		assertEquals("OK", result.get("status"));
-	}
+//	@Test
+//	void testCreateMessage() throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException, UnknownHostException, JSONException {
+//		JSONObject result = service.Message.createMessage("bExympTvaNCJKnTnIhNhilvVpiKooykb", "teste message junit"	);
+//		assertEquals("OK", result.get("status"));
+//	}
 	
 	//recup messages pour une seule personne
-	@Test
-	void testListMessage() throws InstantiationException, IllegalAccessException, ClassNotFoundException, UnknownHostException, SQLException, JSONException {
-		JSONObject result = service.Message.listMessages("bExympTvaNCJKnTnIhNhilvVpiKooykb");
-		assertEquals("OK", result.get("status"));
-	}
+//	@Test
+//	void testListMessage() throws InstantiationException, IllegalAccessException, ClassNotFoundException, UnknownHostException, SQLException, JSONException {
+//		JSONObject result = service.Message.listMessages("bExympTvaNCJKnTnIhNhilvVpiKooykb");
+//		assertEquals("OK", result.get("status"));
+//	}
 	
 
 }

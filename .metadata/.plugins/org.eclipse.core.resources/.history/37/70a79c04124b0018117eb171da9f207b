@@ -1,0 +1,52 @@
+package test;
+
+import java.net.UnknownHostException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import com.mongodb.BasicDBObject;
+import com.mongodb.DBCollection;
+import com.mongodb.DBObject;
+import com.mongodb.MapReduceCommand;
+import com.mongodb.MapReduceOutput;
+
+import bd.Database;
+import tools.MPTools;
+
+public class Main {
+	public static void main(String[] args) throws UnknownHostException, JSONException {
+		//MPTools.mapReduce();
+		//MPTools.search("hello world how are you");
+//		//String out = null;
+//		MapReduceCommand cmd = new MapReduceCommand(col, 
+//													map, 
+//													reduce, 
+//													null,
+//													MapReduceCommand.OutputType.REPLACE.INLINE, null);
+//		cmd.setFinalize(finalize);
+//		BasicDBObject m = new BasicDBObject();
+//		m.put("N", col.count());
+//		cmd.setScope(m);
+//		MapReduceOutput out = col.mapReduce(cmd);
+////		System.out.println(out.results());
+//		List<String> query = new ArrayList<>();
+//		query.add("hello");
+//		query.add("world");
+//		query.add("site");
+//		for(DBObject o:out.results()) {
+//			if(query.contains(o.get("_id")))
+//				System.out.println(o);
+//			//{ "_id" : "world" , "value" : { "67" : 1.0 , "74" : 1.0 , "75" : 1.0}}
+//			//{ "_id" : "world" , "value" : { "67" : 0.4054651081081644 , "74" : 0.4054651081081644 , "75" : 0.4054651081081644 , "76" : 1.2163953243244932}}
+//			BasicDBObject obj = (BasicDBObject) o.get("value");
+//			Set<String> keySet = obj.keySet();
+////			for(String key:keySet)
+////				System.out.println(obj.get(key));
+//
+//		}
+	}
+}

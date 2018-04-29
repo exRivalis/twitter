@@ -28,7 +28,7 @@ public class UserInfo extends HttpServlet {
 		else {
 			//get user info
 			try {
-				result = service.User.getInfo(Integer.parseInt(id));
+				result = service.User.getInfo(key, Integer.parseInt(id));
 			}catch(Exception e) {
 				e.printStackTrace();
 			}

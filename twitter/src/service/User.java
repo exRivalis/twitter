@@ -21,12 +21,15 @@ public class User {
 	    
 		if (login == null || mdp == null || nom == null || prenom == null) {			
 			//informer du succes ou echec de l'operation
+			co.close();
 			return ServicesTools.serviceRefused("arguments manquants", -1);
 			}
 
 		//tester si login deja utilise
-		if(UserTools.userExists(login, co))
+		if(UserTools.userExists(login, co)) {
+			co.close();
 			return ServicesTools.serviceRefused("Login indisponnible", -1);
+		}
 		
 		/*
 		 * inserer user dans la BD 
@@ -36,12 +39,10 @@ public class User {
 	
 		//ajouter une ligne a la bd
 		//ajout guillemets
-		login = "\"" + login + "\"";
-		nom = "\"" + nom + "\"";
-		prenom = "\"" + prenom + "\"";
-		mdp = "\"" + mdp + "\"";
+		nom = nom.substring(0, 1).toUpperCase() + nom.substring(1, nom.length());
+		prenom = prenom.substring(0, 1).toUpperCase() + prenom.substring(1, prenom.length());
 		
-		String query = "INSERT INTO users VALUES(null, " + login +"," + mdp + "," + nom + "," + prenom + ");";
+		String query = "INSERT INTO users VALUES(null, '" + login +"','" + mdp + "','" + nom + "','" + prenom + "');";
 		Statement st = co.createStatement();
 		try {
 			st.executeUpdate(query);
@@ -50,6 +51,7 @@ public class User {
 		}
 		
 		//close connections
+		co.close();
 		st.close();		
 		
 		return result;
@@ -61,34 +63,36 @@ public class User {
 		//creation connection
 		Class.forName("com.mysql.jdbc.Driver").newInstance();
 	    Connection co = Database.getMySQLConnection();
-		//SONObject res;
+		JSONObject res = ServicesTools.serviceAccepted("Disconnected");
 		if (login == null || mdp == null) {
-			return ServicesTools.serviceRefused("argument manquant", -1);
+			res = ServicesTools.serviceRefused("argument manquant", -1);
 		}
 		
-		//si l'utilisateur n'existe pas on arrete
-		boolean is_user = tools.UserTools.userExists(login, co);
-		if(!is_user) {
+		
+		else if(!tools.UserTools.userExists(login, co)) {
+			//si l'utilisateur n'existe pas on arrete
+		
 			return ServicesTools.serviceRefused("Utilisateur inexistant", -1);
 		}
 		
-		//si le mdp incorrect on arrete
-		boolean mdp_ok = tools.UserTools.checkPasswd(login, mdp, co);
-		if(!mdp_ok) {
-			return ServicesTools.serviceRefused("Mot de passe incorrect", -1);
+		else if(!tools.UserTools.checkPasswd(login, mdp, co)) {
+			//si le mdp incorrect on arrete
+			res = ServicesTools.serviceRefused("Mot de passe incorrect", -1);
 		}
-	
-		//generate new connection key
-		String key = UserTools.insertConnection(login, co);
-		int id = UserTools.getUserId(login, co);
-		JSONObject res = ServicesTools.serviceAccepted("succesfully loged in");
-		try {
-			res.put("key", key);
-			res.put("id",  id);
-		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		else {
+			//generate new connection key
+			String key = UserTools.insertConnection(login, co);
+			int id = UserTools.getUserId(login, co);
+			res = ServicesTools.serviceAccepted("succesfully loged in");
+			try {
+				res.put("key", key);
+				res.put("id",  id);
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
+		co.close();
 		return res;
 	}
 	
@@ -98,14 +102,15 @@ public class User {
 		//creation connection
 		Class.forName("com.mysql.jdbc.Driver").newInstance();
 	    Connection co = Database.getMySQLConnection();
+	    JSONObject result = new JSONObject();
 	    
 		if (key == null) {
-			return ServicesTools.serviceRefused("argument manquant", -1);
+			result = ServicesTools.serviceRefused("argument manquant", -1);
 		}
 
 		//si deja deconnecte on fait rien sinon on le deconnecte
-		if(!UserTools.isConnected(key, co)) {
-			return ServicesTools.serviceRefused("User deja deconnecté", -1);
+		else if(!UserTools.isConnected(key, co)) {
+			result = ServicesTools.serviceRefused("User deja deconnecté", -1);
 			
 		}
 		else {
@@ -114,29 +119,35 @@ public class User {
 			String query = "UPDATE session SET connected = '0' WHERE cle = \""+key+"\";";
 			Statement st = co.createStatement();
 			st.executeUpdate(query);
-					
-			//close connections
 			st.close();
+			result = ServicesTools.serviceAccepted("Disconnected");
+					
 		}		
-		
-		return ServicesTools.serviceAccepted("Disconnected");
+		//close connections
+		co.close();
+		return result;
 		
 	}
 
 	//get user info
-	public static JSONObject getInfo(int id) throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException, JSONException {
+	public static JSONObject getInfo(String key, int id) throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException, JSONException {
 		Class.forName("com.mysql.jdbc.Driver").newInstance();
 	    Connection co = Database.getMySQLConnection();
 	    JSONObject result = ServicesTools.serviceAccepted("user info");
-	    
-	    if(UserTools.checkID(Integer.toString(id), co)) {
-	    	//recup nom, prenom, login ...
-	    	JSONObject info = UserTools.getInfo(id, co);
-	    	result.put("info", info);	
-	    }else {
-	    	result = ServicesTools.serviceRefused("arguments manquants", -1);
-	    }
-	    
+	  	if(UserTools.checkKeyValidity(key, co)) {
+	   		 if(UserTools.checkID(Integer.toString(id), co)) {
+		    	//recup nom, prenom, login ...
+		    	JSONObject info = UserTools.getInfo(id, co);
+		    	result.put("info", info);	
+		    }else {
+		    	result = ServicesTools.serviceRefused("arguments manquants", -1);
+		    }
+	   	}
+	   	else {
+	   		result = ServicesTools.serviceRefused("timeout", -1);
+	   	}
+	   
+	    co.close();
 	    return result;
 	}
 }

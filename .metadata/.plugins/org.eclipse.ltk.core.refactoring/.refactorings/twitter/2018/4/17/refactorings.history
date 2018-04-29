@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Rename local variable &apos;id&apos; in &apos;service.Message.listMessages(...)&apos; to &apos;myId&apos;&#x0A;- Original project: &apos;twitter&apos;&#x0A;- Original element: &apos;service.Message.listMessages(String, String).id&apos;&#x0A;- Renamed element: &apos;id&apos;&#x0A;- Update references to refactored element" description="Rename local variable &apos;id&apos;" id="org.eclipse.jdt.ui.rename.local.variable" input="/src&lt;service{Message.java[Message~listMessages~QString;~QString;@id!5414!5454!5418!5419!I!0!false" name="myId" references="true" stamp="1524833783229" version="1.0"/>
+</session>

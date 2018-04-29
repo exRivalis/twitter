@@ -3,13 +3,22 @@ package service;
 import java.net.UnknownHostException;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.mongodb.AggregationOutput;
+import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBCollection;
 import com.mongodb.DBCursor;
@@ -17,82 +26,108 @@ import com.mongodb.DBObject;
 
 import bd.Database;
 import tools.FriendTools;
+import tools.MPTools;
 import tools.MessageTools;
 import tools.ServicesTools;
 import tools.UserTools;
 
 public class Message {
 	//create a new message
-	public static JSONObject createMessage(String key, String text) throws SQLException, InstantiationException, IllegalAccessException, ClassNotFoundException, UnknownHostException {
+	public static JSONObject createMessage(String key, String text, String cible) throws SQLException, InstantiationException, IllegalAccessException, ClassNotFoundException, UnknownHostException, NumberFormatException, JSONException {
 		//creation connection
 		Class.forName("com.mysql.jdbc.Driver").newInstance();
 	    Connection co = Database.getMySQLConnection();
+	    JSONObject result = ServicesTools.serviceAccepted("message ajoute");
 	    
-		//connection mongoDB
-		DBCollection col = Database.getCollection("messages");
-		
-		//creation du contenu du message
-		BasicDBObject message = new BasicDBObject();
-		//on recup user_id avec key
-		int user_id = UserTools.getIdWithKey(key, co);
-		int msgId = MessageTools.getIdCpt();
-		//recup date actuelle
-		GregorianCalendar calendar = new GregorianCalendar();
-		Date ajd = calendar.getTime();
-		
-		
-		//ajout elements
-		//message.put("id", )
-        message.put("id", msgId);
-		message.put("user_id", user_id);
-		message.put("text", text);
-		message.put("date", ajd);
-		//message.put("commentaires", new BasicDBList());
-		
-		//ajout message a la mongoDB
-		col.insert(message);
-		
-		//update id in mongoDB
-		MessageTools.updateIdCpt(msgId);
+	    if(UserTools.checkKeyValidity(key, co)) {
+	   		//connection mongoDB
+			DBCollection col = Database.getCollection("messages");
 			
+			//creation du contenu du message
+			BasicDBObject message = new BasicDBObject();
+			//on recup user_id avec key
+			int user_id = UserTools.getIdWithKey(key, co);
+			int msgId = MessageTools.getIdCpt();
+			//recup date actuelle
+			//GregorianCalendar calendar = new GregorianCalendar();
+			Timestamp date = new Timestamp(System.currentTimeMillis());
+			
+			JSONObject info = UserTools.getInfo(user_id, co);
+			String auteur = info.getString("prenom") + " " + info.getString("nom");
+			
+			//ajout elements
+			//message.put("id", )
+	        message.put("id", msgId);
+	        message.put("cible_id",  Integer.parseInt(cible));
+			message.put("user_id", user_id);
+			message.put("text", text);
+			message.put("date", date.getTime());
+			message.put("auteur", auteur);
+			//message.put("commentaires", new BasicDBList());
+			
+			//ajout message a la mongoDB
+			col.insert(message);
+			
+			//update id in mongoDB
+			MessageTools.updateIdCpt(msgId);
+			result.put("data", message);
+				
+	   	}
+	   	else {
+	   		result = ServicesTools.serviceRefused("timeout", -1);
+	   	}
+		
 		//close connections
 		co.close();
 		
-		return ServicesTools.serviceAccepted("message ajoute");
+		
+		return result;
 	}
 	
 	//creation dun commentaire
 	public static JSONObject addCom(String key, String msgId, String text) throws SQLException, InstantiationException, IllegalAccessException, ClassNotFoundException, UnknownHostException, JSONException {
 		Class.forName("com.mysql.jdbc.Driver").newInstance();
 		Connection co = Database.getMySQLConnection();
+		JSONObject res = ServicesTools.serviceAccepted("commentaire ajoute");
 		
-		DBCollection col = Database.getCollection("messages");
 		
-		BasicDBObject commentaire = new BasicDBObject();
-		DBObject searchQuery = new BasicDBObject();
-		DBObject updateQuery = new BasicDBObject();
-		int user_id = UserTools.getIdWithKey(key, co);
-		int idCpt = MessageTools.getIdCpt();
-		GregorianCalendar calendar = new GregorianCalendar();
-		Date ajd = calendar.getTime();
+		if(UserTools.checkKeyValidity(key, co)) {
+	   		DBCollection col = Database.getCollection("messages");
 		
-		//recupere le compteur d'id dans mongodb
-		DBCollection idCol = Database.getCollection("idCpt");
-		
-		commentaire.put("id", idCpt);
-		commentaire.put("idm", msgId);
-		commentaire.put("user_id", user_id);
-		commentaire.put("text", text);
-		commentaire.put("date", ajd);
-		
-		searchQuery.put("id", Integer.parseInt(msgId));
-		updateQuery.put("$push", new BasicDBObject("commentaires", commentaire));
-		col.update(searchQuery, updateQuery);
-		MessageTools.updateIdCpt(idCpt);
+			BasicDBObject commentaire = new BasicDBObject();
+			DBObject searchQuery = new BasicDBObject();
+			DBObject updateQuery = new BasicDBObject();
+			int user_id = UserTools.getIdWithKey(key, co);
+			int idCpt = MessageTools.getIdCpt();
+	//		GregorianCalendar calendar = new GregorianCalendar();
+	//		Date ajd = calendar.getTime();
+			Timestamp date = new Timestamp(System.currentTimeMillis());
+			
+			JSONObject info = UserTools.getInfo(user_id, co);
+			String auteur = info.getString("prenom") + " " + info.getString("nom");
+			
+			//recupere le compteur d'id dans mongodb
+			DBCollection idCol = Database.getCollection("idCpt");
+			
+			commentaire.put("id", idCpt);
+			commentaire.put("idm", msgId);
+			commentaire.put("user_id", user_id);
+			commentaire.put("text", text);
+			commentaire.put("date", date.getTime());
+			commentaire.put("auteur", auteur);
+			
+			searchQuery.put("id", Integer.parseInt(msgId));
+			updateQuery.put("$push", new BasicDBObject("commentaires", commentaire));
+			col.update(searchQuery, updateQuery);
+			MessageTools.updateIdCpt(idCpt);
+			res.put("commentaire", commentaire);
+	   	}
+	   	else {
+	   		res = ServicesTools.serviceRefused("timeout", -1);
+	   	}
 		
 		co.close();
-		JSONObject res = ServicesTools.serviceAccepted("commentaire ajoute");
-		res.put("commentaire", commentaire);
+		
 		return res;
 	}
 	
@@ -102,15 +137,16 @@ public class Message {
 		Connection co = Database.getMySQLConnection();
 		DBCollection col = Database.getCollection("messages");
 		JSONObject result = ServicesTools.serviceRefused("user not connected", -1);
-		
-		boolean is_connected = tools.UserTools.isConnected(key, co);
-		if(is_connected) {
-			BasicDBObject searchQuery = new BasicDBObject().append("id", Integer.parseInt(idM));
+		if(UserTools.checkKeyValidity(key, co)) {
+	   		BasicDBObject searchQuery = new BasicDBObject().append("id", Integer.parseInt(idM));
 			BasicDBObject updateQuery = new BasicDBObject();
 			updateQuery.put("commentaires", new BasicDBObject("id", Integer.parseInt(idC)));
 			col.update(searchQuery, new BasicDBObject("$pull", updateQuery));
 			result = ServicesTools.serviceAccepted("commentaire supprimé");
-		}
+	   	}
+	   	else {
+	   		result = ServicesTools.serviceRefused("timeout", -1);
+	   	}
 		
 		co.close();
 		return result;
@@ -123,56 +159,81 @@ public class Message {
 		DBCollection col = Database.getCollection("messages");
 		JSONObject result = ServicesTools.serviceRefused("user not connected", -1);
 		
-		boolean is_connected = tools.UserTools.isConnected(key, co);
-		if(is_connected) {
-			BasicDBObject searchQuery = new BasicDBObject("id", Integer.parseInt(id));
+		if(UserTools.checkKeyValidity(key, co)) {
+	   		BasicDBObject searchQuery = new BasicDBObject("id", Integer.parseInt(id));
 			//System.out.println(searchQuery);
 			col.remove(searchQuery);
 			result = ServicesTools.serviceAccepted("Message supprimé");
-		}
+	   	}
+	   	else {
+	   		result = ServicesTools.serviceRefused("timeout", -1);
+	   	}
 		
 		co.close();
 		return result;
 	}
 	//recup message d'un user en particuler
-	public static JSONObject listMessages(String key) throws SQLException, InstantiationException, IllegalAccessException, ClassNotFoundException, UnknownHostException {
+	public static JSONObject listMessages(String key, String id, int limit, int skip) throws SQLException, InstantiationException, IllegalAccessException, ClassNotFoundException, UnknownHostException {
 		//creation connection
 		Class.forName("com.mysql.jdbc.Driver").newInstance();
 	    Connection co = Database.getMySQLConnection();
-	    
 		//connection mongoDB
 		DBCollection col = Database.getCollection("messages");
 		
-		
 		JSONObject messages = new JSONObject();
 		JSONObject result = new JSONObject();
-		int cpt = 0;
-		// recuperer l'id via l'index
-		int id = UserTools.getIdWithKey(key, co);
-        if(id == -1) {
-        	return ServicesTools.serviceRefused("user inexistant", -1);
-        }
-        BasicDBObject query = new BasicDBObject();
-        query.put("user_id", id);
-        // recuperation des messages de l'id
-        DBCursor cursor = col.find(query);
-        while(cursor.hasNext()) {
-        	//affichage de chaque messages
-        	try {
-				messages.put(""+cpt++, cursor.next());
+		
+		if(UserTools.checkKeyValidity(key, co)) {
+	   		int cpt = 0;
+			// recuperer l'id via l'index
+			int myId = UserTools.getIdWithKey(key, co);
+			
+	        if(myId == -1) {
+	        	co.close();
+	        	return ServicesTools.serviceRefused("user inexistant", -1);
+	        }
+	        
+	//        DBObject sort = new BasicDBObject("$orderby", new BasicDBObject("date", -1));
+	//        DBObject limit = new BasicDBObject("$limit", 10);
+	//        DBObject match = new BasicDBObject("$match", new BasicDBObject("cible_id", Integer.parseInt(id)));
+	        DBObject query = new BasicDBObject("cible_id", Integer.parseInt(id));
+	        //List<DBObject> query = Arrays.asList(sort, match, limit);
+	//        BasicDBObject user_ID = new BasicDBObject().append("user_id", Integer.parseInt(id));
+	//        BasicDBObject cible_ID = new BasicDBObject().append("cible_id", Integer.parseInt(id));
+	//        BasicDBList choice_list = new BasicDBList();
+	//        choice_list.add(user_ID);
+	//        choice_list.add(cible_ID);
+	//        query.put("$or", choice_list);
+	        
+	        
+	//        System.out.println(choice_list);
+	        // recuperation des messages de l'id
+	        DBCursor cursor = col.find(query).sort(new BasicDBObject("date", -1)).skip(skip).limit(limit);
+	        while(cursor.hasNext()) {
+	//        	System.out.println("listMessage");
+	        	//affichage de chaque messages
+	        	try {
+	        		DBObject current = cursor.next();
+	//        		System.out.println(current);
+					messages.put(""+cpt++, current);
+				} catch (JSONException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+	        }
+	        
+	        result = ServicesTools.serviceAccepted("liste des messages");
+	        try {
+				result.put("messages", messages);
 			} catch (JSONException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-        }
-        
-        result = ServicesTools.serviceAccepted("liste des messages");
-        try {
-			result.put("messages", messages);
-		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+	   	}
+	   	else {
+	   		result = ServicesTools.serviceRefused("timeout", -1);
+	   	}
+		
 		
 		//close connections
 		co.close();
@@ -182,35 +243,40 @@ public class Message {
 	}
 	
 	//list all messages
-	public static JSONObject listAllMessages() throws UnknownHostException {	    
+	public static JSONObject listAllMessages(String key, int limit, int skip) throws UnknownHostException, InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException {	    
+		//creation connection
+		Class.forName("com.mysql.jdbc.Driver").newInstance();
+		Connection co = Database.getMySQLConnection();
 		//connection mongoDB
 		DBCollection col = Database.getCollection("messages");
 		JSONObject messages = new JSONObject();
 		JSONObject result = new JSONObject();
-		int cpt = 0;
-		// recuperer l'id via l'index
 		
-        
-        // recuperation de tous les messages
-        DBCursor cursor = col.find();
-        while(cursor.hasNext()) {
-        	//affichage de chaque messages
-        	try {
-				messages.put(""+cpt++, cursor.next());
+		if(UserTools.checkKeyValidity(key, co)) {
+	   		int cpt = 0;
+	        // recuperation des limit premierrs messages a partir du skip-eme
+	        DBCursor cursor = col.find().sort(new BasicDBObject("date", -1)).skip(skip).limit(limit);
+	        while(cursor.hasNext()) {
+	        	//affichage de chaque messages
+	        	try {
+					messages.put(""+cpt++, cursor.next());
+				} catch (JSONException e) {
+					e.printStackTrace();
+				}
+	        }
+	        
+	        result = ServicesTools.serviceAccepted("liste des messages");
+	        try {
+				result.put("messages", messages);
 			} catch (JSONException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-        }
-        
-        result = ServicesTools.serviceAccepted("liste des messages");
-        try {
-			result.put("messages", messages);
-		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
+	   	}
+	   	else {
+	   		result = ServicesTools.serviceRefused("timeout", -1);
+	   	}		
+		co.close();
         return result;
 	}
 	
@@ -224,19 +290,101 @@ public class Message {
 		
 		JSONObject messages = new JSONObject();
 		JSONObject result = ServicesTools.serviceAccepted("liste messages friends");
-		int cpt = 0;
-		// recuperer id friends
-		JSONObject friends = FriendTools.listFriends(key, co);
 		
-		//pour chaque amis recup les message et ajouter au jsonobject messages
-		Iterator<?> keys = friends.keys();
-		while(keys.hasNext()) {
-			int f_id = Integer.parseInt((String)keys.next());
-			messages.put(""+f_id, MessageTools.listMessagesId(f_id, col, co));
-		}
+		if(UserTools.checkKeyValidity(key, co)) {
+	   		int cpt = 0;
+			// recuperer id friends
+			JSONObject friends = FriendTools.listFriends(key, co);
+			
+			//pour chaque amis recup les message et ajouter au jsonobject messages
+			Iterator<?> keys = friends.keys();
+			while(keys.hasNext()) {
+				int f_id = Integer.parseInt((String)keys.next());
+				messages.put(""+f_id, MessageTools.listMessagesId(f_id, col, co));
+			}
+			
+			result.put("messages", messages);
+	   	}
+	   	else {
+	   		result = ServicesTools.serviceRefused("timeout", -1);
+	   	}
 		
-		result.put("messages", messages);
+		co.close();
 		return result;
 	}
 		
+	/*
+	 * @parameters connection key, content of the search input
+	 * @return ServiceAccepted with JSONObject [{idDoc: score}...{}]
+	 */
+	public static JSONObject search(String key, String text) throws UnknownHostException, JSONException, InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException {
+		Set<String> words = new HashSet();
+		JSONObject scores = new JSONObject();
+		JSONObject result = ServicesTools.serviceAccepted("found");
+		JSONObject messages = new JSONObject();
+		BasicDBObject query = new BasicDBObject();
+		
+		//creation connection
+		Class.forName("com.mysql.jdbc.Driver").newInstance();
+	    Connection co = Database.getMySQLConnection();
+	    //connection mongoDB
+	  	DBCollection col = Database.getCollection("messages");
+	    
+	  	if(UserTools.checkKeyValidity(key, co)) {
+	   		for(String w:text.split(" "))
+			words.add(w);
+			
+			Iterable<DBObject> map = MPTools.mapReduce();
+			for(DBObject o: map) {
+				//un des mots qu'on cherche
+				if(words.contains(o.get("_id"))) {
+					//id des messages contenant un de ses mots
+	//				System.out.println(o);
+					BasicDBObject values = (BasicDBObject)o.get("value");
+					Set<String> keySet = values.keySet();
+					for(String k:keySet) {
+						//System.out.println(values.get(key));
+						
+						if(scores.isNull(k)) {
+							scores.put(k, values.getInt(k));
+						}
+						else {
+							double tt = scores.getDouble(k) + values.getDouble(k);
+							scores.put(k, tt);
+						}
+					}
+				}
+			}
+			if(scores.length()>0) {
+				//get these posts
+				List<Integer> ids = new ArrayList<>();
+				Iterator it = scores.keys();
+				while(it.hasNext())
+					ids.add(Integer.parseInt(it.next().toString()));
+	//				System.out.println(it.next());
+					
+		        
+				query.put("id", new BasicDBObject("$in", ids));
+		        // recuperation des messages
+		        DBCursor cursor = col.find(query);
+		        while(cursor.hasNext()) {
+	//	        	System.out.println(cursor.next());
+		        	DBObject next = cursor.next();
+		        	messages.put(next.get("id").toString(), next);
+		        }
+		        
+		        result.put("messages", messages);
+				result.put("scores", scores);
+			}
+			else
+				result.put("message", "notfound");
+	   	}
+	   	else {
+	   		result = ServicesTools.serviceRefused("timeout", -1);
+	   	}
+		
+		
+		co.close();
+		return result;
+	}
 }

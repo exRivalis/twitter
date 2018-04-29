@@ -44,7 +44,10 @@ body{
 	padding-right: 45px;
 }
 
-
+#search_zone{
+	width:auto;
+	height: auto;
+}
 #search_bar{
 	margin: 4px 2px;
 	padding: 6px 22px;
@@ -365,6 +368,22 @@ body{
 	margin-bottom: 10px;
 	color: #11A8AB;
 }
+#charger{
+	width: 20%;
+	margin-left: 40%;
+	margin-top: 15px;
+	border-radius: 8px;
+	background: #EEEEEE;
+	font-size: 20px;
+	color: #41A8AB;
+	padding: 10px;
+	display: block;
+	text-align: center; 
+	cursor: pointer;
+}
+#charger:hover{
+	background: #CCC;
+}
 #delete_m{
 	/* position: fixed;*/
 	color: #aaa	;
@@ -493,6 +512,7 @@ body{
 /* navigation bar */
 /* The navigation bar */
 .navbar {
+	height: 50px;
     overflow: hidden;
 	background-color: #333;
 	z-index: 1;
@@ -532,7 +552,20 @@ body{
 #login_m_btn:hover {
 	background: #19e6e6;
 }
-
+#radio_div{
+	width: 120px;
+	height: 50px;
+	float: right;
+}
+#radio{
+	height: 25px;
+	text-align: justify;
+	width: 100%;
+	padding: 4px;
+}
+#radio:hover{
+	background: #0F9295;
+}
 #follow_m_btn{
 	float: right;
     display: block;
@@ -700,15 +733,44 @@ body{
 }
 
 #search_result{
-	text-align: center;
+	/* text-align: center; */
 	/* width: 80%; */
 	display: block;
+	/* margin-left: auto;
+	margin-right: auto; */
 }
-
+#notfound{
+    width: 90px;
+    font-size: 42px;
+    height: px;
+    text-align: center;
+    /* padding: 30px; */
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 90px;
+    display: block;
+    box-shadow: 0 5px 0 8px rgba(0, 0, 0, 0.2), 0 7px 20px 0 rgba(0, 0, 0, 0.12);
+	color: #0F9295;
+	cursor: pointer;
+}
 .user{
 	/* width: 100%; */
+	/* width: 300px; */
+	/* margin-left: 10%;
+	margin-right: 10%;	 */
+	/* background: #ccc; */
+	margin-left: auto;
+	margin-right: auto;
+	width: 60%;
 	display: block;
 	cursor: pointer;
+	padding-right: 10px;
+}
+.user:hover{
+	background: #EEE;
+	padding-right: 20px;
+	padding-left: 20px;
+	
 }
 
 .user_info{
