@@ -214,7 +214,7 @@ public class UserTools {
 			Statement st = co.createStatement();
 			ResultSet res = st.executeQuery(query);
 			while(res.next()) {
-				Timestamp time = new Timestamp(System.currentTimeMillis() - 60*1000); //une minute
+				Timestamp time = new Timestamp(System.currentTimeMillis() - 10*60*1000); //10 minute
 				Timestamp start = res.getTimestamp(2);
 				//deco si inactif plus de x minutes
 				if(time.after(start)) {

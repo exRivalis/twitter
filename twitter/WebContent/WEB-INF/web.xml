@@ -64,6 +64,10 @@
 		<servlet-class>servlet.user.UserInfo</servlet-class> 
 	</servlet>
 	<servlet> 
+		<servlet-name>picturePath</servlet-name> 
+		<servlet-class>servlet.user.PicturePath</servlet-class> 
+	</servlet>
+	<servlet> 
 		<servlet-name>searchMessage</servlet-name> 
 		<servlet-class>servlet.message.Search</servlet-class> 
 	</servlet>
@@ -130,6 +134,10 @@
 	<servlet-mapping> 
 		<servlet-name>userInfo</servlet-name> 
 		<url-pattern>/user/info</url-pattern> 
+	</servlet-mapping>
+	<servlet-mapping> 
+		<servlet-name>picturePath</servlet-name> 
+		<url-pattern>/user/picture</url-pattern> 
 	</servlet-mapping>
 	<servlet-mapping> 
 		<servlet-name>searchMessage</servlet-name> 

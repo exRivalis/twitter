@@ -75,7 +75,8 @@ function responsePageUser(resp, id){
 		html += makeConnexionModal();
 		html += "<div id='corps_page'><div id='profile_pres'>"
 		html += "            <div id='profile_picture_div'>"
-		html += "                <img id='profile_picture' src='./ressources/photo_de_profil.jpg'/>"
+		html += "				<form> <input type='file' id='fileloader' onChange='readURL(this)'/></form>"
+		html += "                <img id='profile_picture' src='./ressources/photo_de_profil.jpg' onclick='fileloader(\""+id+"\")'/>"
 		html += "            </div>"
 		html += "            <div id='profile_info' >"
 		html += "                <a class='pres_text' id='pres_name'>"+prenom+" "+nom+"</a>"
@@ -531,5 +532,59 @@ function responseSearchPosts(resp){
 	}
 	else{
 		alert(res.message)
+	}
+}
+//save profile picture
+function fileloader(id){
+	// console.log(id+" "+env.id)
+	if(env.id == id)
+		$("#fileloader").click()
+}
+function readURL(input) {
+	if (input.files && input.files[0]) {
+		//console.log($("#fileloader")[0].files[0])
+		var formData = new FormData;
+		formData.append("key", env.key);
+		formData.append("file", $("#fileloader")[0].files[0]);
+		//$('#profile_picture').attr('src', e.target.result);
+		//console.log(e.target.result.length);
+		//"key="+env.key+"&path="+$("#fileloader")[0].files[0]
+		console.log("ok")
+		$.ajax({
+			enctype: "multipart/form-data",
+			method: "POST",
+			type: 'POST',
+			url: "user/picture",
+			data: formData/*"key="+env.key+"&file="+$("#fileloader")[0].files[0]*/,
+			//datatype: 'json',
+			//encode: true,
+			processData: false,
+			contentType: false,
+			success: function(resp){responsePath(resp)},
+			error: function(jqXHR, textStatus, errorThrown){alert(textStatus+" "+errorThrown);},
+		})
+		// $.ajax({
+		// 	type: "GET",
+		// 	url: "user/picture",
+		// 	data: "key="+env.key+"&path="+e.target.result.toString(),
+		// 	datatype: "JSON",
+		// 	success: function(resp){responsePath(resp)},
+		// 	error: function(jqXHR, textStatus, errorThrown){alert(textStatus+" "+errorThrown);},
+		// })	
+	}
+}
+
+function responsePath(resp){
+	var res = JSON.parse(resp, revival);
+	
+	if(res.status == "OK"){
+		var path = res.path
+		console.log(res.message)
+		$('#profile_picture').attr('src', path)
+	}else if(res.error == "timeout"){
+		$(makeConnexionPanel);
+	}
+	else{
+		alert(res.error)
 	}
 }

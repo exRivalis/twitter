@@ -2,6 +2,7 @@ package service;
 
 
 import java.sql.Connection;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
@@ -142,6 +143,38 @@ public class User {
 		    }else {
 		    	result = ServicesTools.serviceRefused("arguments manquants", -1);
 		    }
+	   	}
+	   	else {
+	   		result = ServicesTools.serviceRefused("timeout", -1);
+	   	}
+	   
+	    co.close();
+	    return result;
+	}
+	
+	//set profile picture path
+	public static JSONObject setPicturePath(String key, String path) throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException, JSONException {
+		Class.forName("com.mysql.jdbc.Driver").newInstance();
+	    Connection co = Database.getMySQLConnection();
+	    JSONObject result = ServicesTools.serviceAccepted("pic_path");
+	  	if(UserTools.checkKeyValidity(key, co)) {
+	   		 int id = UserTools.getIdWithKey(key, co);
+	   		 String query = "SELECT count(*) as total FROM pictures WHERE id='"+id+"';";
+	   		 Statement st = co.createStatement();
+	   		 ResultSet res = st.executeQuery(query);
+	   		 if(res.next()) {
+	   			if(res.getInt("total") > 0) {
+	   				//update path
+	   				query = "UPDATE pictures SET path='"+path+"' WHERE id='"+id+"';";
+	   				st.executeUpdate(query);
+	   			}
+	   			else {
+	   				//add path
+	   				query = "INSERT INTO pictures VALUES('"+id+"','"+path+"');";
+	   				st.execute(query);
+	   			}
+	   		 }
+	   		result.put("path", path);	   		 
 	   	}
 	   	else {
 	   		result = ServicesTools.serviceRefused("timeout", -1);

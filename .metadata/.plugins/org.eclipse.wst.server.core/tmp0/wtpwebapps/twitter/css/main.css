@@ -160,9 +160,14 @@ body{
 #profile_picture_div{
 	width: 40%;
 	height: 170px;
-	margin-left: 30%
+	margin-left: 30%;
+	cursor: pointer;
 }
-
+#fileloader{
+	visibility: hidden; 
+	width: 0px; 
+	height: 0px;
+}
 #profile_picture{
 	width: 160px;
 	height: 160px;
